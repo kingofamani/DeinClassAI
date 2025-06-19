@@ -1,0 +1,93 @@
+# docker-compose.yaml (最終推薦版)
+
+services:
+  # 服務一：教師管理面板 (Flask 應用)
+  teacher_panel:
+    profiles:
+      - full # 透過 `docker-compose --profile full up` 才會啟動此服務
+    build: ./flask_app
+    container_name: deinclassai-teacher-panel
+    ports:
+      - "5000:5000"
+    environment:
+      # Flask 應用需要知道去哪裡找 LiteLLM。使用服務名 'litellm' 進行內部通信
+      - LITELLM_API_URL=http://litellm:4000
+      # 從 .env 檔案讀取主控金鑰，用於調用 LiteLLM 管理 API
+      - LITELLM_ADMIN_KEY=${LITELLM_ADMIN_KEY}
+    networks:
+      - deinclassai_net
+    depends_on:
+      - litellm
+    restart: unless-stopped
+
+  # 服務二：PostgreSQL 資料庫
+  postgres:
+    image: postgres:15-alpine
+    container_name: deinclassai-postgres
+    environment:
+      - POSTGRES_DB=litellm
+      - POSTGRES_USER=litellm_user
+      - POSTGRES_PASSWORD=litellm_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - deinclassai_net
+    restart: unless-stopped
+    ports:
+      - "5432:5432"  # 可選：如果您想從外部連接資料庫
+
+  # 服務三：LiteLLM - 權限核心
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    platform: linux/amd64 # 為非 ARM 架構的電腦（如 Intel/AMD Windows）指定平台
+    container_name: deinclassai-litellm
+    command: ["--config", "/config/config.yaml"]
+
+    ports:
+      - "4000:4000"
+    volumes:
+      # 將本地的設定檔和回調腳本掛載到容器內
+      - ./litellm_config:/config
+      # 建立一個持久化 volume 來儲存 LiteLLM 的資料庫 (金鑰、預算等)
+      - litellm_data:/app/.liteLLM
+    env_file:
+      - ./.env.litellm
+    networks:
+      - deinclassai_net
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  # 服務四：Open WebUI - 學生前端
+  open_webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: deinclassai-open-webui
+    ports:
+      - "8080:8080"
+    volumes:
+      # 建立一個持久化 volume 來儲存 Open WebUI 的數據 (用戶帳號、對話歷史等)
+      - open_webui_data:/app/backend/data
+    environment:
+      # Google 登入 (OIDC) 設定
+      - 'OIDC_ENABLED=true'
+      - 'OIDC_CLIENT_ID=${GOOGLE_CLIENT_ID}'
+      - 'OIDC_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}'
+      - 'OIDC_ISSUER_URL=https://accounts.google.com'
+      # 部署到公網時，必須取消註釋並填寫您的 Open WebUI 的完整 URL
+      # - 'OIDC_REDIRECT_URL=https://YOUR-WEBUI-URL/oidc/callback'
+    networks:
+      - deinclassai_net
+    depends_on:
+      - litellm
+    restart: unless-stopped
+
+# 為所有服務定義一個共用的橋接網絡
+networks:
+  deinclassai_net:
+    driver: bridge
+
+# 明確定義持久化數據卷
+volumes:
+  postgres_data:
+  litellm_data:
+  open_webui_data:

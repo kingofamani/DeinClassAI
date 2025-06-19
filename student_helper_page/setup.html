@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <title>學生金鑰設定</title>
+    <style>
+      body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; text-align: center; }
+      button { margin: 20px; padding: 10px 20px; }
+      #keyBox { word-break: break-all; font-weight: bold; }
+    </style>
+  </head>
+  <body>
+    <h2>歡迎使用 AI 教室</h2>
+    <p>請先複製下方金鑰，並依指示前往 AI 教室</p>
+    <div id="keyBox"></div>
+    <button onclick="copyKey()">複製金鑰</button>
+    <button onclick="gotoWebUI()">進入 AI 教室</button>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const key = params.get('key') || 'N/A';
+      document.getElementById('keyBox').innerText = key;
+
+      function copyKey() {
+        navigator.clipboard.writeText(key).then(() => {
+          alert('已複製到剪貼簿！');
+        }).catch(err => alert('複製失敗：' + err));
+      }
+
+      function gotoWebUI() {
+        // 假設服務部署於同一主機 8080 port
+        window.location.href = 'http://'+window.location.hostname+':8080';
+      }
+    </script>
+  </body>
+</html>

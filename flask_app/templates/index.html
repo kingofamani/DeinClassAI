@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <title>AI Classroom Teacher Panel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+      body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; }
+      label { display: block; margin-top: 12px; }
+      button { margin-top: 20px; padding: 10px 20px; }
+      #qrcode { margin-top: 30px; }
+    </style>
+  </head>
+  <body>
+    <h2>教師儀表板</h2>
+    <label>學生姓名：<input id="studentName" type="text" required></label>
+    <label>權限套餐：
+      <select id="package">
+        <option value="basic">基礎班</option>
+        <option value="advanced">進階班</option>
+      </select>
+    </label>
+    <button onclick="createKey()">生成通行證</button>
+
+    <div id="result" style="display:none;">
+      <h3>QR Code</h3>
+      <div id="qrcode"></div>
+      <p>或直接複製金鑰：<span id="keySpan" style="font-weight:bold;"></span></p>
+    </div>
+
+    <script>
+      async function createKey() {
+        const student_name = document.getElementById('studentName').value.trim();
+        const packageName = document.getElementById('package').value;
+        if (!student_name) { alert('請輸入學生姓名'); return; }
+
+        const res = await fetch('/api/create_key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ student_name, package: packageName })
+        });
+        const data = await res.json();
+        if (data.error) { alert('Error: ' + data.error); return; }
+
+        const key = data.virtual_key;
+        document.getElementById('keySpan').innerText = key;
+        const helperUrl = `${window.location.origin}/student_helper_page/setup.html?key=${key}`;
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('qrcode').innerHTML = '';
+        new QRCode(document.getElementById('qrcode'), helperUrl);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+# litellm_config/config.yaml (最終推薦版)
+
+# --- 通用設定 ---
+general_settings:
+  # 這是您的主控金鑰，Flask 應用將用它來管理虛擬金鑰
+  # 請確保它與您 .env 檔案中的 LITELLM_ADMIN_KEY 一致
+  master_key: ${LITELLM_ADMIN_KEY}
+
+# --- 模型列表 ---
+# 在這裡定義所有您希望透過 LiteLLM 代理的模型
+model_list:
+  - model_name: gpt-4o-mini
+    litellm_params:
+      model: openai/gpt-4o-mini
+      # 直接從環境變數讀取您的真實 OpenAI Key
+      # Docker Compose 會將 .env 中的 OPENAI_API_KEY 傳給 LiteLLM 容器
+      api_key: ${OPENAI_API_KEY}
+  
+  - model_name: gpt-4o # 您也可以添加更多模型
+    litellm_params:
+      model: openai/gpt-4o
+      api_key: ${OPENAI_API_KEY}
+
+
+# --- LiteLLM 自身設定 ---
+litellm_settings:
+  # 啟用詳細日誌，方便調試
+  set_verbose: true
+  # PostgreSQL 資料庫連線，使用 Docker Compose 中定義的 postgres 服務
+  database_url: ${DATABASE_URL}
+  # 註冊我們的自訂回調函數，用於實現時段控制
+  pre_call_callbacks: ["custom_callbacks.pre_call_callback"]
