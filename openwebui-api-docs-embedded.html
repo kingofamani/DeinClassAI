@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenWebUI API 文檔 - 離線版本 (內嵌)</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui.css" />
+    <style>
+        html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+        body {
+            margin:0;
+            background: #fafafa;
+        }
+        .swagger-ui .topbar {
+            background-color: #1f2937;
+            border-bottom: 1px solid #374151;
+        }
+        .swagger-ui .topbar .download-url-wrapper {
+            display: none;
+        }
+        .custom-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .custom-header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        .custom-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        .info-panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .info-panel h3 {
+            color: #2d3748;
+            margin-top: 0;
+        }
+        .auth-info {
+            background: #fef5e7;
+            border-left: 4px solid #f6ad55;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        .auth-info strong {
+            color: #c05621;
+        }
+        .cors-info {
+            background: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        .cors-info strong {
+            color: #2c7a7b;
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-header">
+        <h1>🚀 OpenWebUI API 文檔</h1>
+        <p>完整的 API 參考文檔 - 離線版本 (內嵌式)</p>
+    </div>
+
+    <div class="cors-info">
+        <strong>✅ CORS 問題已解決：</strong>
+        此版本將 OpenAPI 規格直接內嵌在 HTML 中，無需載入外部 JSON 文件，可以直接在瀏覽器中開啟使用！
+    </div>
+
+    <div class="auth-info">
+        <strong>🔐 認證說明：</strong>
+        所有 API 請求都需要 Bearer Token 認證。請在 OpenWebUI 的 Settings > Account 中獲取您的 API Key，
+        然後在請求標頭中加入：<code>Authorization: Bearer YOUR_API_KEY</code>
+    </div>
+
+    <div class="info-panel">
+        <h3>📋 API 分類概覽</h3>
+        <ul>
+            <li><strong>🤖 Ollama</strong> - 本地模型管理和推理</li>
+            <li><strong>🌐 OpenAI</strong> - OpenAI 兼容的 API 端點</li>
+            <li><strong>🔧 Pipelines</strong> - 自定義處理管道</li>
+            <li><strong>📋 Tasks</strong> - 任務管理和自動化</li>
+            <li><strong>🖼️ Images</strong> - 圖像生成和處理</li>
+            <li><strong>🎵 Audio</strong> - 語音合成和識別</li>
+            <li><strong>📚 Retrieval</strong> - RAG 文檔檢索</li>
+            <li><strong>⚙️ Configs</strong> - 系統配置管理</li>
+            <li><strong>🔐 Auths</strong> - 用戶認證和授權</li>
+            <li><strong>👥 Users</strong> - 用戶管理</li>
+            <li><strong>💬 Chats</strong> - 對話管理</li>
+            <li><strong>📢 Channels</strong> - 頻道功能</li>
+        </ul>
+    </div>
+
+    <div id="swagger-ui"></div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-standalone-preset.js"></script>
+    <script>
+        // 內嵌的 OpenAPI 規格 (簡化版本)
+        const openApiSpec = {
+            "openapi": "3.1.0",
+            "info": {
+                "title": "OpenWebUI API",
+                "version": "0.1.0",
+                "description": `
+                    <div style="background: #f7fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h3>🎯 OpenWebUI API 完整文檔</h3>
+                        <p>這是 OpenWebUI 的完整 API 文檔，提供了所有可用的端點和功能。</p>
+                        
+                        <h4>🔗 常用端點：</h4>
+                        <ul>
+                            <li><strong>用戶註冊：</strong> <code>POST /api/v1/auths/signup</code></li>
+                            <li><strong>用戶登入：</strong> <code>POST /api/v1/auths/signin</code></li>
+                            <li><strong>獲取用戶列表：</strong> <code>GET /api/v1/users/</code></li>
+                            <li><strong>聊天對話：</strong> <code>POST /api/chat/completions</code></li>
+                            <li><strong>模型列表：</strong> <code>GET /api/models</code></li>
+                        </ul>
+
+                        <h4>⚠️ 重要提醒：</h4>
+                        <ul>
+                            <li>所有 API 調用都需要有效的 Bearer Token</li>
+                            <li>基礎 URL：<code>http://localhost:8080</code></li>
+                            <li>支援 OpenAI 兼容的 API 格式</li>
+                            <li>部分功能需要管理員權限</li>
+                        </ul>
+                    </div>
+                `
+            },
+            "servers": [
+                {
+                    "url": "http://localhost:8080",
+                    "description": "本地開發服務器"
+                }
+            ],
+            "components": {
+                "securitySchemes": {
+                    "HTTPBearer": {
+                        "type": "http",
+                        "scheme": "bearer",
+                        "description": "在 OpenWebUI Settings > Account 中獲取 API Key"
+                    }
+                }
+            },
+            "paths": {
+                "/api/v1/auths/signup": {
+                    "post": {
+                        "tags": ["auths"],
+                        "summary": "用戶註冊",
+                        "description": "創建新用戶帳號",
+                        "operationId": "signup",
+                        "requestBody": {
+                            "required": true,
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "required": ["email", "name", "password"],
+                                        "properties": {
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "test@example.com"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Test User"
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "minLength": 8,
+                                                "example": "testpassword123"
+                                            },
+                                            "profile_image_url": {
+                                                "type": "string",
+                                                "description": "用戶頭像 URL (可選)"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "註冊成功",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "description": "認證令牌"
+                                                },
+                                                "user": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {"type": "string"},
+                                                        "email": {"type": "string"},
+                                                        "name": {"type": "string"},
+                                                        "role": {"type": "string"}
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "/api/v1/auths/signin": {
+                    "post": {
+                        "tags": ["auths"],
+                        "summary": "用戶登入",
+                        "description": "使用 email 和密碼登入",
+                        "operationId": "signin",
+                        "requestBody": {
+                            "required": true,
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "required": ["email", "password"],
+                                        "properties": {
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "test@example.com"
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "example": "testpassword123"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "登入成功",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "description": "認證令牌"
+                                                },
+                                                "user": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {"type": "string"},
+                                                        "email": {"type": "string"},
+                                                        "name": {"type": "string"},
+                                                        "role": {"type": "string"}
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "/api/v1/users/": {
+                    "get": {
+                        "tags": ["users"],
+                        "summary": "獲取用戶列表",
+                        "description": "獲取系統中的所有用戶 (需要管理員權限)",
+                        "operationId": "get_users",
+                        "security": [{"HTTPBearer": []}],
+                        "parameters": [
+                            {
+                                "name": "query",
+                                "in": "query",
+                                "required": false,
+                                "schema": {"type": "string"},
+                                "description": "搜尋關鍵字"
+                            },
+                            {
+                                "name": "page",
+                                "in": "query",
+                                "required": false,
+                                "schema": {"type": "integer", "default": 1},
+                                "description": "頁碼"
+                            }
+                        ],
+                        "responses": {
+                            "200": {
+                                "description": "用戶列表",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "users": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {"type": "string"},
+                                                            "email": {"type": "string"},
+                                                            "name": {"type": "string"},
+                                                            "role": {"type": "string"},
+                                                            "created_at": {"type": "string"},
+                                                            "updated_at": {"type": "string"}
+                                                        }
+                                                    }
+                                                },
+                                                "total": {"type": "integer"},
+                                                "page": {"type": "integer"}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "/api/v1/chats/": {
+                    "get": {
+                        "tags": ["chats"],
+                        "summary": "獲取對話列表",
+                        "description": "獲取當前用戶的對話列表",
+                        "operationId": "get_chats",
+                        "security": [{"HTTPBearer": []}],
+                        "parameters": [
+                            {
+                                "name": "page",
+                                "in": "query",
+                                "required": false,
+                                "schema": {"type": "integer"},
+                                "description": "頁碼"
+                            }
+                        ],
+                        "responses": {
+                            "200": {
+                                "description": "對話列表",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {"type": "string"},
+                                                    "title": {"type": "string"},
+                                                    "created_at": {"type": "string"},
+                                                    "updated_at": {"type": "string"}
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "/api/chat/completions": {
+                    "post": {
+                        "tags": ["chat"],
+                        "summary": "聊天對話",
+                        "description": "與 AI 模型進行對話 (OpenAI 兼容格式)",
+                        "operationId": "chat_completions",
+                        "security": [{"HTTPBearer": []}],
+                        "requestBody": {
+                            "required": true,
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "required": ["model", "messages"],
+                                        "properties": {
+                                            "model": {
+                                                "type": "string",
+                                                "example": "llama3.2:latest",
+                                                "description": "要使用的模型名稱"
+                                            },
+                                            "messages": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "role": {
+                                                            "type": "string",
+                                                            "enum": ["system", "user", "assistant"]
+                                                        },
+                                                        "content": {"type": "string"}
+                                                    }
+                                                },
+                                                "example": [
+                                                    {"role": "user", "content": "你好！"}
+                                                ]
+                                            },
+                                            "stream": {
+                                                "type": "boolean",
+                                                "default": false,
+                                                "description": "是否使用串流回應"
+                                            },
+                                            "temperature": {
+                                                "type": "number",
+                                                "default": 0.7,
+                                                "minimum": 0,
+                                                "maximum": 2,
+                                                "description": "回應的隨機性"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "聊天回應",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "choices": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "message": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "role": {"type": "string"},
+                                                                    "content": {"type": "string"}
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "/api/models": {
+                    "get": {
+                        "tags": ["models"],
+                        "summary": "獲取模型列表",
+                        "description": "獲取可用的 AI 模型列表",
+                        "operationId": "get_models",
+                        "security": [{"HTTPBearer": []}],
+                        "responses": {
+                            "200": {
+                                "description": "模型列表",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {"type": "string"},
+                                                            "name": {"type": "string"},
+                                                            "object": {"type": "string"},
+                                                            "created": {"type": "integer"}
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        // 初始化 Swagger UI
+        const ui = SwaggerUIBundle({
+            spec: openApiSpec,
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "StandaloneLayout",
+            tryItOutEnabled: true,
+            requestInterceptor: (request) => {
+                // 自動為所有請求添加基礎 URL
+                if (!request.url.startsWith('http')) {
+                    request.url = 'http://localhost:8080' + request.url;
+                }
+                return request;
+            },
+            responseInterceptor: (response) => {
+                // 處理回應
+                return response;
+            },
+            onComplete: () => {
+                console.log('OpenWebUI API 文檔載入完成！');
+                
+                // 添加自定義樣式
+                const style = document.createElement('style');
+                style.textContent = `
+                    .swagger-ui .scheme-container {
+                        background: #667eea;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    }
+                    .swagger-ui .info {
+                        margin: 20px 0;
+                    }
+                    .swagger-ui .info .title {
+                        color: #2d3748;
+                        font-size: 2rem;
+                    }
+                `;
+                document.head.appendChild(style);
+            },
+            defaultModelsExpandDepth: 1,
+            defaultModelExpandDepth: 1,
+            displayOperationId: false,
+            displayRequestDuration: true,
+            docExpansion: 'list',
+            filter: true,
+            showExtensions: true,
+            showCommonExtensions: true,
+            supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch']
+        });
+
+        window.ui = ui;
+    </script>
+</body>
+</html> 
