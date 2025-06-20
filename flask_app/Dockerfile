@@ -9,11 +9,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # 複製並安裝依賴
-COPY requirements.txt ./
+COPY flask_app/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+# 複製學生助手頁面
+COPY student_helper_page/ /app/student_helper_page
+
 # 複製應用程式原始碼
-COPY . .
+COPY flask_app/ .
 
 # 預設環境變數
 ENV FLASK_APP=app.py

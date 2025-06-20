@@ -5,7 +5,9 @@ services:
   teacher_panel:
     profiles:
       - full # 透過 `docker-compose --profile full up` 才會啟動此服務
-    build: ./flask_app
+    build:
+      context: .
+      dockerfile: ./flask_app/Dockerfile
     container_name: deinclassai-teacher-panel
     ports:
       - "5000:5000"

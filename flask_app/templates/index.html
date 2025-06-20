@@ -2,52 +2,608 @@
 <html lang="zh-Hant">
   <head>
     <meta charset="utf-8">
-    <title>AI Classroom Teacher Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DeinClassAI - 教師管理面板</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-      body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; }
-      label { display: block; margin-top: 12px; }
-      button { margin-top: 20px; padding: 10px 20px; }
-      #qrcode { margin-top: 30px; }
+      body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+      }
+      .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+      .stat-card:hover {
+        transform: translateY(-5px);
+      }
+      .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+      }
+      .qr-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .key-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #667eea;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .progress-bar-custom {
+        height: 8px;
+        border-radius: 4px;
+      }
+      .package-badge {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 15px;
+      }
+      .btn-primary-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 0.5rem 1.5rem;
+      }
+      .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      #qrcode {
+        display: inline-block;
+        padding: 1rem;
+        background: white;
+        border-radius: 10px;
+      }
+      .loading {
+        display: none;
+      }
+      .alert-custom {
+        border-radius: 10px;
+        border: none;
+      }
     </style>
   </head>
   <body>
-    <h2>教師儀表板</h2>
-    <label>學生姓名：<input id="studentName" type="text" required></label>
-    <label>權限套餐：
-      <select id="package">
-        <option value="basic">基礎班</option>
-        <option value="advanced">進階班</option>
-      </select>
-    </label>
-    <button onclick="createKey()">生成通行證</button>
-
-    <div id="result" style="display:none;">
-      <h3>QR Code</h3>
-      <div id="qrcode"></div>
-      <p>或直接複製金鑰：<span id="keySpan" style="font-weight:bold;"></span></p>
+    <!-- 頁面標題 -->
+    <div class="dashboard-header">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1><i class="fas fa-chalkboard-teacher me-3"></i>DeinClassAI 教師管理面板</h1>
+            <p class="mb-0">管理學生 AI 權限，監控使用狀況，控制學習成本</p>
+          </div>
+          <div class="col-md-4 text-end">
+            <button class="btn btn-light" onclick="refreshData()">
+              <i class="fas fa-sync-alt me-2"></i>重新整理
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
+    <div class="container">
+      <!-- 系統統計卡片 -->
+      <div class="row mb-4" id="statsContainer">
+        <div class="col-md-3 mb-3">
+          <div class="stat-card text-center">
+            <i class="fas fa-users fa-2x text-primary mb-2"></i>
+            <div class="stat-number" id="totalKeys">-</div>
+            <div class="text-muted">總學生數</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="stat-card text-center">
+            <i class="fas fa-user-check fa-2x text-success mb-2"></i>
+            <div class="stat-number" id="activeKeys">-</div>
+            <div class="text-muted">活躍學生</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="stat-card text-center">
+            <i class="fas fa-dollar-sign fa-2x text-warning mb-2"></i>
+            <div class="stat-number" id="totalSpend">$-</div>
+            <div class="text-muted">總花費</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="stat-card text-center">
+            <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
+            <div class="stat-number" id="budgetUtilization">-%</div>
+            <div class="text-muted">預算使用率</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主要功能區域 -->
+      <div class="row">
+        <div class="col-lg-8">
+          <!-- 導航標籤 -->
+          <ul class="nav nav-pills mb-4" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="create-tab" data-bs-toggle="pill" data-bs-target="#create" type="button" role="tab">
+                <i class="fas fa-plus me-2"></i>建立通行證
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="manage-tab" data-bs-toggle="pill" data-bs-target="#manage" type="button" role="tab">
+                <i class="fas fa-list me-2"></i>管理學生
+              </button>
+            </li>
+          </ul>
+
+          <!-- 標籤內容 -->
+          <div class="tab-content" id="mainTabContent">
+            <!-- 建立通行證 -->
+            <div class="tab-pane fade show active" id="create" role="tabpanel">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                  <h5 class="mb-0"><i class="fas fa-user-plus me-2"></i>為學生建立 AI 通行證</h5>
+                </div>
+                <div class="card-body">
+                  <form id="createKeyForm">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="studentName" class="form-label">學生姓名 *</label>
+                        <input type="text" class="form-control" id="studentName" required placeholder="請輸入學生姓名">
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="package" class="form-label">權限套餐 *</label>
+                        <select class="form-select" id="package" required>
+                          <!-- 動態載入套餐選項 -->
+                        </select>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <div id="packageDescription" class="text-muted small"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom">
+                      <i class="fas fa-magic me-2"></i>生成通行證
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- 管理學生 -->
+            <div class="tab-pane fade" id="manage" role="tabpanel">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0"><i class="fas fa-users me-2"></i>學生列表</h5>
+                  <button class="btn btn-outline-primary btn-sm" onclick="loadKeys()">
+                    <i class="fas fa-sync me-1"></i>重新載入
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div id="keysContainer">
+                    <div class="text-center py-4">
+                      <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                      <p class="text-muted mt-2">載入中...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QR Code 顯示區域 -->
+        <div class="col-lg-4">
+          <div class="qr-container" id="qrContainer" style="display: none;">
+            <h5 class="mb-3"><i class="fas fa-qrcode me-2"></i>學生通行證</h5>
+            <div id="qrcode"></div>
+            <div class="mt-3">
+              <h6 id="qrStudentName" class="text-primary"></h6>
+              <p class="small text-muted mb-2">請讓學生掃描此 QR Code</p>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control form-control-sm" id="virtualKey" readonly>
+                <button class="btn btn-outline-secondary btn-sm" onclick="copyKey()">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              <!-- 測試通行連結 -->
+              <div class="text-center">
+                <a href="#" id="testPassLink" class="btn btn-outline-primary btn-sm" target="_blank">
+                  <i class="fas fa-external-link-alt me-1"></i>測試通行
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 預算更新模態框 -->
+    <div class="modal fade" id="budgetModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">更新預算</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="budgetForm">
+              <input type="hidden" id="budgetKeyId">
+              <div class="mb-3">
+                <label for="newBudget" class="form-label">新預算金額 (USD)</label>
+                <input type="number" class="form-control" id="newBudget" step="0.01" min="0.01" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" onclick="updateBudget()">更新</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 載入中提示 -->
+    <div class="loading position-fixed top-50 start-50 translate-middle" id="loadingSpinner">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">載入中...</span>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      async function createKey() {
-        const student_name = document.getElementById('studentName').value.trim();
+      let packages = {};
+      let currentKeys = [];
+
+      // 頁面載入時初始化
+      document.addEventListener('DOMContentLoaded', function() {
+        loadPackages();
+        loadSystemStats();
+        loadKeys();
+        
+        // 套餐選擇變更時更新描述
+        document.getElementById('package').addEventListener('change', updatePackageDescription);
+        
+        // 表單提交事件
+        document.getElementById('createKeyForm').addEventListener('submit', createKey);
+      });
+
+      // 載入套餐資訊
+      async function loadPackages() {
+        try {
+          const response = await fetch('/api/packages');
+          const data = await response.json();
+          packages = data.packages;
+          
+          const select = document.getElementById('package');
+          select.innerHTML = '';
+          
+          for (const [key, pkg] of Object.entries(packages)) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = `${pkg.name} - $${pkg.budget}`;
+            select.appendChild(option);
+          }
+          
+          updatePackageDescription();
+        } catch (error) {
+          showAlert('載入套餐資訊失敗', 'danger');
+        }
+      }
+
+      // 更新套餐描述
+      function updatePackageDescription() {
+        const selectedPackage = document.getElementById('package').value;
+        const pkg = packages[selectedPackage];
+        if (pkg) {
+          document.getElementById('packageDescription').innerHTML = 
+            `<strong>預算:</strong> $${pkg.budget} | <strong>可用模型:</strong> ${pkg.models.join(', ')}<br>
+             <strong>說明:</strong> ${pkg.description}`;
+        }
+      }
+
+      // 載入系統統計
+      async function loadSystemStats() {
+        try {
+          const response = await fetch('/api/system_stats');
+          const data = await response.json();
+          
+          document.getElementById('totalKeys').textContent = data.total_keys || 0;
+          document.getElementById('activeKeys').textContent = data.active_keys || 0;
+          document.getElementById('totalSpend').textContent = `$${data.total_spend || 0}`;
+          document.getElementById('budgetUtilization').textContent = `${data.budget_utilization || 0}%`;
+        } catch (error) {
+          console.error('載入統計失敗:', error);
+        }
+      }
+
+      // 建立金鑰
+      async function createKey(event) {
+        event.preventDefault();
+        
+        const studentName = document.getElementById('studentName').value.trim();
         const packageName = document.getElementById('package').value;
-        if (!student_name) { alert('請輸入學生姓名'); return; }
+        
+        if (!studentName) {
+          showAlert('請輸入學生姓名', 'warning');
+          return;
+        }
+        
+        showLoading(true);
+        
+        try {
+          const response = await fetch('/api/create_key', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              student_name: studentName, 
+              package: packageName 
+            })
+          });
+          
+          const data = await response.json();
+          
+          if (data.error) {
+            showAlert(data.error, 'danger');
+            return;
+          }
+          
+          // 顯示 QR Code
+          displayQRCode(data);
+          
+          // 清空表單
+          document.getElementById('createKeyForm').reset();
+          updatePackageDescription();
+          
+          // 重新載入統計和金鑰列表
+          loadSystemStats();
+          loadKeys();
+          
+          showAlert(`成功為 ${data.student_name} 建立通行證！`, 'success');
+          
+        } catch (error) {
+          showAlert('建立金鑰時發生錯誤', 'danger');
+        } finally {
+          showLoading(false);
+        }
+      }
 
-        const res = await fetch('/api/create_key', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ student_name, package: packageName })
+      // 顯示 QR Code
+      function displayQRCode(data) {
+        const container = document.getElementById('qrContainer');
+        const qrDiv = document.getElementById('qrcode');
+        const studentNameDiv = document.getElementById('qrStudentName');
+        const keyInput = document.getElementById('virtualKey');
+        
+        // 清空之前的 QR Code
+        qrDiv.innerHTML = '';
+        
+        // 生成 QR Code URL
+        const baseUrl = window.location.origin;
+        const helperUrl = `${baseUrl}/student_helper_page/setup.html?key=${data.virtual_key}&name=${encodeURIComponent(data.student_name)}`;
+        
+        // 生成 QR Code
+        new QRCode(qrDiv, {
+          text: helperUrl,
+          width: 200,
+          height: 200,
+          colorDark: "#000000",
+          colorLight: "#ffffff"
         });
-        const data = await res.json();
-        if (data.error) { alert('Error: ' + data.error); return; }
+        
+        // 更新顯示資訊
+        studentNameDiv.textContent = `${data.student_name} (${data.package})`;
+        keyInput.value = data.virtual_key;
+        
+        // 更新測試通行連結
+        const testPassLink = document.getElementById('testPassLink');
+        testPassLink.href = helperUrl;
+        
+        // 顯示容器
+        container.style.display = 'block';
+      }
 
-        const key = data.virtual_key;
-        document.getElementById('keySpan').innerText = key;
-        const helperUrl = `${window.location.origin}/student_helper_page/setup.html?key=${key}`;
-        document.getElementById('result').style.display = 'block';
-        document.getElementById('qrcode').innerHTML = '';
-        new QRCode(document.getElementById('qrcode'), helperUrl);
+      // 複製金鑰
+      function copyKey() {
+        const keyInput = document.getElementById('virtualKey');
+        keyInput.select();
+        document.execCommand('copy');
+        showAlert('金鑰已複製到剪貼簿', 'info');
+      }
+
+      // 載入金鑰列表
+      async function loadKeys() {
+        try {
+          const response = await fetch('/api/list_keys');
+          const data = await response.json();
+          
+          if (data.error) {
+            showAlert(data.error, 'danger');
+            return;
+          }
+          
+          currentKeys = data.keys || [];
+          displayKeys(currentKeys);
+          
+        } catch (error) {
+          showAlert('載入金鑰列表失敗', 'danger');
+        }
+      }
+
+      // 顯示金鑰列表
+      function displayKeys(keys) {
+        const container = document.getElementById('keysContainer');
+        
+        if (keys.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-4">
+              <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+              <p class="text-muted">尚未建立任何學生通行證</p>
+            </div>
+          `;
+          return;
+        }
+        
+        container.innerHTML = keys.map(key => {
+          const budgetPercent = key.budget_limit > 0 ? (key.budget_used / key.budget_limit * 100) : 0;
+          const statusColor = key.status === 'active' ? 'success' : 'danger';
+          const packageColor = getPackageColor(key.package);
+          
+          return `
+            <div class="key-card">
+              <div class="row align-items-center">
+                <div class="col-md-4">
+                  <h6 class="mb-1">${key.student_name}</h6>
+                  <span class="package-badge bg-${packageColor} text-white">${packages[key.package]?.name || key.package}</span>
+                  <span class="badge bg-${statusColor} ms-2">${key.status === 'active' ? '活躍' : '已用完'}</span>
+                </div>
+                <div class="col-md-4">
+                  <small class="text-muted">預算使用情況</small>
+                  <div class="progress progress-bar-custom mb-1">
+                    <div class="progress-bar bg-${budgetPercent > 80 ? 'danger' : 'primary'}" 
+                         style="width: ${Math.min(budgetPercent, 100)}%"></div>
+                  </div>
+                  <small>$${key.budget_used.toFixed(2)} / $${key.budget_limit.toFixed(2)}</small>
+                </div>
+                <div class="col-md-4 text-end">
+                  <button class="btn btn-outline-primary btn-sm me-1" onclick="editBudget('${key.key_id}', ${key.budget_limit})">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm" onclick="deleteKey('${key.key_id}', '${key.student_name}')">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 獲取套餐顏色
+      function getPackageColor(packageName) {
+        const colors = {
+          'basic': 'info',
+          'advanced': 'warning', 
+          'premium': 'success'
+        };
+        return colors[packageName] || 'secondary';
+      }
+
+      // 編輯預算
+      function editBudget(keyId, currentBudget) {
+        document.getElementById('budgetKeyId').value = keyId;
+        document.getElementById('newBudget').value = currentBudget;
+        new bootstrap.Modal(document.getElementById('budgetModal')).show();
+      }
+
+      // 更新預算
+      async function updateBudget() {
+        const keyId = document.getElementById('budgetKeyId').value;
+        const newBudget = parseFloat(document.getElementById('newBudget').value);
+        
+        if (newBudget <= 0) {
+          showAlert('預算必須大於 0', 'warning');
+          return;
+        }
+        
+        try {
+          const response = await fetch('/api/update_budget', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key_id: keyId, budget: newBudget })
+          });
+          
+          const data = await response.json();
+          
+          if (data.error) {
+            showAlert(data.error, 'danger');
+            return;
+          }
+          
+          showAlert('預算更新成功！', 'success');
+          bootstrap.Modal.getInstance(document.getElementById('budgetModal')).hide();
+          loadKeys();
+          loadSystemStats();
+          
+        } catch (error) {
+          showAlert('更新預算失敗', 'danger');
+        }
+      }
+
+      // 刪除金鑰
+      async function deleteKey(keyId, studentName) {
+        if (!confirm(`確定要刪除 ${studentName} 的通行證嗎？此操作無法復原。`)) {
+          return;
+        }
+        
+        try {
+          const response = await fetch(`/api/delete_key/${keyId}`, {
+            method: 'DELETE'
+          });
+          
+          const data = await response.json();
+          
+          if (data.error) {
+            showAlert(data.error, 'danger');
+            return;
+          }
+          
+          showAlert(`已刪除 ${studentName} 的通行證`, 'success');
+          loadKeys();
+          loadSystemStats();
+          
+        } catch (error) {
+          showAlert('刪除金鑰失敗', 'danger');
+        }
+      }
+
+      // 重新整理所有資料
+      function refreshData() {
+        loadSystemStats();
+        loadKeys();
+        showAlert('資料已重新整理', 'info');
+      }
+
+      // 顯示提示訊息
+      function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show alert-custom position-fixed`;
+        alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alertDiv.innerHTML = `
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alertDiv);
+        
+        // 自動消失
+        setTimeout(() => {
+          if (alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
+          }
+        }, 5000);
+      }
+
+      // 顯示/隱藏載入中
+      function showLoading(show) {
+        const spinner = document.getElementById('loadingSpinner');
+        spinner.style.display = show ? 'block' : 'none';
       }
     </script>
   </body>

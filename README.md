@@ -33,20 +33,50 @@
 
 ## 🚀 快速開始
 
-### 前置需求
+### 📋 系統需求
 
-- Docker & Docker Compose
+- Docker Desktop (Windows/Mac) 或 Docker Engine (Linux)
+- docker-compose
+- 8GB+ 記憶體
+- 5GB+ 可用磁碟空間
 - OpenAI API 金鑰
 - Google OAuth 2.0 憑證（用於學生登入）
 
-### 1. 複製專案
+### ⚡ 一鍵啟動
+
+我們提供了便捷的啟動腳本：
+
+**Windows 用戶：**
+```powershell
+# 啟動系統
+.\start.ps1
+
+# 檢查狀態
+.\status.ps1
+```
+
+**macOS/Linux 用戶：**
+```bash
+# 啟動系統
+chmod +x start.sh
+./start.sh
+
+# 檢查狀態
+docker-compose ps
+```
+
+**📖 詳細指南：** 請參閱 [QUICK_START.md](QUICK_START.md)
+
+### 🔧 手動設定
+
+#### 1. 複製專案
 
 ```bash
 git clone <repository-url>
 cd DeinClassAI
 ```
 
-### 2. 環境變數設定
+#### 2. 環境變數設定
 
 複製環境變數範本：
 
@@ -80,7 +110,7 @@ PORT=4000
 STORE_MODEL_IN_DB=True
 ```
 
-### 3. 啟動服務
+#### 3. 啟動服務
 
 ```bash
 # 啟動所有核心服務
@@ -90,7 +120,7 @@ docker-compose up -d
 docker-compose --profile full up -d
 ```
 
-### 4. 存取服務
+#### 4. 存取服務
 
 - **LiteLLM 管理介面**: http://localhost:4000/ui/
 - **教師管理面板**: http://localhost:5000 (需要 `--profile full`)

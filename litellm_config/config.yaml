@@ -3,8 +3,12 @@
 # --- 通用設定 ---
 general_settings:
   # 這是您的主控金鑰，Flask 應用將用它來管理虛擬金鑰
-  # 請確保它與您 .env 檔案中的 LITELLM_ADMIN_KEY 一致
-  master_key: ${LITELLM_ADMIN_KEY}
+  # 請確保它與您 .env.litellm 檔案中的 LITELLM_MASTER_KEY 一致
+  master_key: sk-1234567890abcdef1234567890abcdef1234567890abcdef
+  # 啟用資料庫儲存
+  store_model_in_db: true
+  # PostgreSQL 資料庫連線
+  database_url: postgresql://litellm_user:litellm_password@postgres:5432/litellm
 
 # --- 模型列表 ---
 # 在這裡定義所有您希望透過 LiteLLM 代理的模型
@@ -26,7 +30,5 @@ model_list:
 litellm_settings:
   # 啟用詳細日誌，方便調試
   set_verbose: true
-  # PostgreSQL 資料庫連線，使用 Docker Compose 中定義的 postgres 服務
-  database_url: ${DATABASE_URL}
   # 註冊我們的自訂回調函數，用於實現時段控制
   pre_call_callbacks: ["custom_callbacks.pre_call_callback"]
