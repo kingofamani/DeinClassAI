@@ -42,7 +42,7 @@ def make_litellm_request(endpoint, method="GET", data=None):
         "Content-Type": "application/json",
         "Authorization": f"Bearer {LITELLM_ADMIN_KEY}"
     }
-    
+
     url = f"{LITELLM_ADMIN_URL}{endpoint}"
     
     try:

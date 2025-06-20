@@ -70,6 +70,8 @@ services:
       # 建立一個持久化 volume 來儲存 Open WebUI 的數據 (用戶帳號、對話歷史等)
       - open_webui_data:/app/backend/data
     environment:
+      # 啟用開發模式以顯示 Swagger API 文檔
+      - 'ENV=dev'
       # Google 登入 (OIDC) 設定
       - 'OIDC_ENABLED=true'
       - 'OIDC_CLIENT_ID=${GOOGLE_CLIENT_ID}'
