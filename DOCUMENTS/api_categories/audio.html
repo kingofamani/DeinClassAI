@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音訊處理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 音訊處理 API 分類配置
+        const audioCategory = {
+            name: '音訊處理',
+            icon: 'fas fa-volume-up',
+            endpoints: [
+                {
+                    path: '/api/v1/audio/config',
+                    method: 'GET',
+                    summary: '獲取音訊配置',
+                    description: '獲取當前的音訊處理配置設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/audio/config/update',
+                    method: 'POST',
+                    summary: '更新音訊配置',
+                    description: '更新音訊處理的配置設定，包括 TTS 和 STT 配置',
+                    auth: true,
+                    params: [],
+                    body: {
+                        tts: {
+                            OPENAI_API_BASE_URL: 'https://api.openai.com/v1',
+                            OPENAI_API_KEY: 'your_openai_api_key',
+                            API_KEY: 'your_api_key',
+                            ENGINE: 'openai',
+                            MODEL: 'tts-1',
+                            VOICE: 'alloy',
+                            SPLIT_ON: 'sentence',
+                            AZURE_SPEECH_REGION: 'eastus',
+                            AZURE_SPEECH_BASE_URL: 'https://eastus.tts.speech.microsoft.com',
+                            AZURE_SPEECH_OUTPUT_FORMAT: 'audio-16khz-32kbitrate-mono-mp3'
+                        },
+                        stt: {
+                            OPENAI_API_BASE_URL: 'https://api.openai.com/v1',
+                            OPENAI_API_KEY: 'your_openai_api_key',
+                            ENGINE: 'openai',
+                            MODEL: 'whisper-1',
+                            SUPPORTED_CONTENT_TYPES: ['audio/mpeg', 'audio/wav', 'audio/ogg'],
+                            WHISPER_MODEL: 'base',
+                            DEEPGRAM_API_KEY: 'your_deepgram_api_key',
+                            AZURE_API_KEY: 'your_azure_api_key',
+                            AZURE_REGION: 'eastus',
+                            AZURE_LOCALES: 'zh-TW',
+                            AZURE_BASE_URL: 'https://eastus.stt.speech.microsoft.com',
+                            AZURE_MAX_SPEAKERS: '2'
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/audio/speech',
+                    method: 'POST',
+                    summary: '文字轉語音',
+                    description: '將文字轉換為語音音訊檔案',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'tts-1',
+                        input: '你好，這是一個文字轉語音的測試。',
+                        voice: 'alloy',
+                        response_format: 'mp3',
+                        speed: 1.0
+                    }
+                },
+                {
+                    path: '/api/v1/audio/transcriptions',
+                    method: 'POST',
+                    summary: '語音轉文字',
+                    description: '將音訊檔案轉換為文字內容（需要上傳檔案）',
+                    auth: true,
+                    params: [],
+                    body: {
+                        file: '(binary file data)',
+                        language: 'zh',
+                        model: 'whisper-1',
+                        prompt: '這是一段中文語音',
+                        response_format: 'json',
+                        temperature: 0
+                    },
+                    note: '此端點需要使用 multipart/form-data 格式上傳音訊檔案'
+                },
+                {
+                    path: '/api/v1/audio/models',
+                    method: 'GET',
+                    summary: '獲取音訊模型列表',
+                    description: '獲取可用的音訊處理模型列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/audio/voices',
+                    method: 'GET',
+                    summary: '獲取語音列表',
+                    description: '獲取可用的 TTS 語音選項列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('audio', audioCategory);
+        });
+    </script>
+</body>
+</html> 

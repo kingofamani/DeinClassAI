@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知識庫管理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 知識庫管理 API 分類配置
+        const knowledgeCategory = {
+            name: '知識庫管理',
+            icon: 'fas fa-brain',
+            endpoints: [
+                {
+                    path: '/api/v1/knowledge/',
+                    method: 'GET',
+                    summary: '獲取知識庫列表',
+                    description: '獲取所有可用的知識庫列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/knowledge/list',
+                    method: 'GET',
+                    summary: '獲取知識庫清單',
+                    description: '獲取知識庫的詳細清單資訊',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/knowledge/create',
+                    method: 'POST',
+                    summary: '創建新知識庫',
+                    description: '創建一個新的知識庫',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: '我的知識庫',
+                        description: '這是一個範例知識庫',
+                        data: {}
+                    }
+                },
+                {
+                    path: '/api/v1/knowledge/reindex',
+                    method: 'POST',
+                    summary: '重新索引知識庫檔案',
+                    description: '重新建立知識庫檔案的搜尋索引',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/knowledge/{id}',
+                    method: 'GET',
+                    summary: '根據 ID 獲取知識庫',
+                    description: '根據知識庫 ID 獲取特定知識庫的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '知識庫 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/knowledge/{id}/update',
+                    method: 'POST',
+                    summary: '更新知識庫',
+                    description: '更新指定知識庫的內容和配置',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '知識庫 ID', required: true }
+                    ],
+                    body: {
+                        name: '更新的知識庫名稱',
+                        description: '更新後的知識庫描述',
+                        data: {}
+                    }
+                },
+                {
+                    path: '/api/v1/knowledge/{id}/file/add',
+                    method: 'POST',
+                    summary: '添加檔案到知識庫',
+                    description: '將檔案添加到指定的知識庫中',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '知識庫 ID', required: true }
+                    ],
+                    body: {
+                        file_id: 'file_123',
+                        filename: 'document.pdf',
+                        content_type: 'application/pdf'
+                    }
+                },
+                {
+                    path: '/api/v1/knowledge/{id}/file/update',
+                    method: 'POST',
+                    summary: '更新知識庫檔案',
+                    description: '更新知識庫中的特定檔案',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '知識庫 ID', required: true }
+                    ],
+                    body: {
+                        file_id: 'file_123',
+                        filename: 'updated_document.pdf',
+                        content_type: 'application/pdf'
+                    }
+                },
+                {
+                    path: '/api/v1/knowledge/{id}/file/remove',
+                    method: 'POST',
+                    summary: '從知識庫移除檔案',
+                    description: '從指定的知識庫中移除檔案',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '知識庫 ID', required: true }
+                    ],
+                    body: {
+                        file_id: 'file_123'
+                    }
+                },
+                {
+                    path: '/api/v1/knowledge/{id}/delete',
+                    method: 'DELETE',
+                    summary: '刪除知識庫',
+                    description: '刪除指定的知識庫',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '知識庫 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/knowledge/{id}/reset',
+                    method: 'POST',
+                    summary: '重置知識庫',
+                    description: '重置指定知識庫的內容和索引',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '知識庫 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/knowledge/{id}/files/batch/add',
+                    method: 'POST',
+                    summary: '批量添加檔案到知識庫',
+                    description: '批量將多個檔案添加到指定的知識庫中',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '知識庫 ID', required: true }
+                    ],
+                    body: {
+                        files: [
+                            {
+                                file_id: 'file_123',
+                                filename: 'document1.pdf',
+                                content_type: 'application/pdf'
+                            },
+                            {
+                                file_id: 'file_124',
+                                filename: 'document2.txt',
+                                content_type: 'text/plain'
+                            }
+                        ]
+                    }
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('knowledge', knowledgeCategory);
+        });
+    </script>
+</body>
+</html> 

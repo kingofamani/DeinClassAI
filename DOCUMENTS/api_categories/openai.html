@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // OpenAI API 分類配置
+        const openaiCategory = {
+            name: 'OpenAI API',
+            icon: 'fas fa-robot',
+            endpoints: [
+                {
+                    path: '/openai/config',
+                    method: 'GET',
+                    summary: '獲取 OpenAI 配置',
+                    description: '獲取 OpenAI API 的配置設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/openai/config/update',
+                    method: 'POST',
+                    summary: '更新 OpenAI 配置',
+                    description: '更新 OpenAI API 的配置設定',
+                    auth: true,
+                    params: [],
+                    body: {
+                        ENABLE_OPENAI_API: true,
+                        OPENAI_API_BASE_URLS: [
+                            'https://api.openai.com/v1'
+                        ],
+                        OPENAI_API_KEYS: [
+                            'sk-your-openai-api-key-here'
+                        ],
+                        OPENAI_API_CONFIGS: {
+                            'https://api.openai.com/v1': {
+                                'name': 'OpenAI',
+                                'api_key': 'sk-your-openai-api-key-here'
+                            }
+                        }
+                    }
+                },
+                {
+                    path: '/openai/audio/speech',
+                    method: 'POST',
+                    summary: '文字轉語音',
+                    description: '使用 OpenAI 的 TTS 服務將文字轉換為語音',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'tts-1',
+                        input: '你好，這是一個語音合成測試。',
+                        voice: 'alloy',
+                        response_format: 'mp3',
+                        speed: 1.0
+                    }
+                },
+                {
+                    path: '/openai/models/{url_idx}',
+                    method: 'GET',
+                    summary: '根據 URL 索引獲取模型',
+                    description: '根據指定的 URL 索引獲取可用的 OpenAI 模型列表',
+                    auth: true,
+                    params: [
+                        { name: 'url_idx', type: 'integer', description: 'URL 索引', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/openai/models',
+                    method: 'GET',
+                    summary: '獲取模型列表',
+                    description: '獲取可用的 OpenAI 模型列表',
+                    auth: true,
+                    params: [
+                        { name: 'url_idx', type: 'integer', description: 'URL 索引', required: false }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/openai/verify',
+                    method: 'POST',
+                    summary: '驗證連接',
+                    description: '驗證 OpenAI API 連接是否正常',
+                    auth: true,
+                    params: [],
+                    body: {
+                        url: 'https://api.openai.com/v1',
+                        key: 'sk-your-openai-api-key-here',
+                        config: {
+                            timeout: 30,
+                            max_retries: 3
+                        }
+                    }
+                },
+                {
+                    path: '/openai/chat/completions',
+                    method: 'POST',
+                    summary: '生成聊天完成',
+                    description: '使用 OpenAI 的聊天完成 API 生成回應',
+                    auth: true,
+                    params: [
+                        { name: 'bypass_filter', type: 'boolean', description: '繞過過濾器', required: false, default: false }
+                    ],
+                    body: {
+                        model: 'gpt-3.5-turbo',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: '你是一個有用的助手。'
+                            },
+                            {
+                                role: 'user',
+                                content: '你好，請介紹一下你自己。'
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 1000,
+                        top_p: 1.0,
+                        frequency_penalty: 0.0,
+                        presence_penalty: 0.0,
+                        stream: false
+                    }
+                },
+                {
+                    path: '/openai/{path}',
+                    method: 'GET',
+                    summary: 'OpenAI 代理 (GET)',
+                    description: '代理所有 GET 請求到 OpenAI API（已棄用）',
+                    auth: true,
+                    params: [
+                        { name: 'path', type: 'string', description: 'API 路徑', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/openai/{path}',
+                    method: 'POST',
+                    summary: 'OpenAI 代理 (POST)',
+                    description: '代理所有 POST 請求到 OpenAI API（已棄用）',
+                    auth: true,
+                    params: [
+                        { name: 'path', type: 'string', description: 'API 路徑', required: true }
+                    ],
+                    body: {
+                        data: '請求數據...'
+                    }
+                },
+                {
+                    path: '/openai/{path}',
+                    method: 'PUT',
+                    summary: 'OpenAI 代理 (PUT)',
+                    description: '代理所有 PUT 請求到 OpenAI API（已棄用）',
+                    auth: true,
+                    params: [
+                        { name: 'path', type: 'string', description: 'API 路徑', required: true }
+                    ],
+                    body: {
+                        data: '更新數據...'
+                    }
+                },
+                {
+                    path: '/openai/{path}',
+                    method: 'DELETE',
+                    summary: 'OpenAI 代理 (DELETE)',
+                    description: '代理所有 DELETE 請求到 OpenAI API（已棄用）',
+                    auth: true,
+                    params: [
+                        { name: 'path', type: 'string', description: 'API 路徑', required: true }
+                    ],
+                    body: null
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('openai', openaiCategory);
+        });
+    </script>
+</body>
+</html> 

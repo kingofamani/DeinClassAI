@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>頻道管理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 頻道管理 API 分類配置
+        const channelsCategory = {
+            name: '頻道管理',
+            icon: 'fas fa-hashtag',
+            endpoints: [
+                {
+                    path: '/api/v1/channels/',
+                    method: 'GET',
+                    summary: '獲取頻道列表',
+                    description: '獲取所有可用頻道的列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/channels/create',
+                    method: 'POST',
+                    summary: '創建新頻道',
+                    description: '創建一個新的聊天頻道',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: '新頻道',
+                        description: '這是一個新的聊天頻道',
+                        is_public: true,
+                        members: ['user1', 'user2']
+                    }
+                },
+                {
+                    path: '/api/v1/channels/{id}',
+                    method: 'GET',
+                    summary: '根據 ID 獲取頻道',
+                    description: '根據頻道 ID 獲取特定頻道的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/channels/{id}/update',
+                    method: 'POST',
+                    summary: '更新頻道',
+                    description: '根據頻道 ID 更新頻道資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true }
+                    ],
+                    body: {
+                        name: '更新後的頻道名稱',
+                        description: '更新後的頻道描述',
+                        is_public: false
+                    }
+                },
+                {
+                    path: '/api/v1/channels/{id}/delete',
+                    method: 'DELETE',
+                    summary: '刪除頻道',
+                    description: '根據頻道 ID 刪除特定頻道',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/channels/{id}/messages',
+                    method: 'GET',
+                    summary: '獲取頻道訊息',
+                    description: '獲取指定頻道的訊息列表',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/channels/{id}/messages/post',
+                    method: 'POST',
+                    summary: '發送頻道訊息',
+                    description: '在指定頻道中發送新訊息',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true }
+                    ],
+                    body: {
+                        content: '這是一條新訊息',
+                        type: 'text',
+                        metadata: {
+                            timestamp: '2024-01-01T12:00:00Z'
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/channels/{id}/messages/{message_id}',
+                    method: 'GET',
+                    summary: '獲取特定訊息',
+                    description: '根據訊息 ID 獲取特定訊息的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true },
+                        { name: 'message_id', type: 'string', description: '訊息 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/channels/{id}/messages/{message_id}/thread',
+                    method: 'GET',
+                    summary: '獲取訊息討論串',
+                    description: '獲取指定訊息的討論串回覆',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true },
+                        { name: 'message_id', type: 'string', description: '訊息 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/channels/{id}/messages/{message_id}/update',
+                    method: 'POST',
+                    summary: '更新訊息',
+                    description: '更新指定訊息的內容',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true },
+                        { name: 'message_id', type: 'string', description: '訊息 ID', required: true }
+                    ],
+                    body: {
+                        content: '更新後的訊息內容',
+                        edited: true
+                    }
+                },
+                {
+                    path: '/api/v1/channels/{id}/messages/{message_id}/reactions/add',
+                    method: 'POST',
+                    summary: '添加訊息反應',
+                    description: '為指定訊息添加表情反應',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true },
+                        { name: 'message_id', type: 'string', description: '訊息 ID', required: true }
+                    ],
+                    body: {
+                        emoji: '👍',
+                        user_id: 'user123'
+                    }
+                },
+                {
+                    path: '/api/v1/channels/{id}/messages/{message_id}/reactions/remove',
+                    method: 'DELETE',
+                    summary: '移除訊息反應',
+                    description: '移除指定訊息的表情反應',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true },
+                        { name: 'message_id', type: 'string', description: '訊息 ID', required: true }
+                    ],
+                    body: {
+                        emoji: '👍',
+                        user_id: 'user123'
+                    }
+                },
+                {
+                    path: '/api/v1/channels/{id}/messages/{message_id}/delete',
+                    method: 'DELETE',
+                    summary: '刪除訊息',
+                    description: '刪除指定的頻道訊息',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '頻道 ID', required: true },
+                        { name: 'message_id', type: 'string', description: '訊息 ID', required: true }
+                    ],
+                    body: null
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('channels', channelsCategory);
+        });
+    </script>
+</body>
+</html> 

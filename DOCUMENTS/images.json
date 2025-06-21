@@ -1,0 +1,522 @@
+{
+  "paths": {
+    "/api/v1/images/config": {
+      "get": {
+        "tags": [
+          "images"
+        ],
+        "summary": "Get Config",
+        "operationId": "get_config_api_v1_images_config_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/images/config/update": {
+      "post": {
+        "tags": [
+          "images"
+        ],
+        "summary": "Update Config",
+        "operationId": "update_config_api_v1_images_config_update_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/open_webui__routers__images__ConfigForm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/images/config/url/verify": {
+      "get": {
+        "tags": [
+          "images"
+        ],
+        "summary": "Verify Url",
+        "operationId": "verify_url_api_v1_images_config_url_verify_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/images/image/config": {
+      "get": {
+        "tags": [
+          "images"
+        ],
+        "summary": "Get Image Config",
+        "operationId": "get_image_config_api_v1_images_image_config_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/images/image/config/update": {
+      "post": {
+        "tags": [
+          "images"
+        ],
+        "summary": "Update Image Config",
+        "operationId": "update_image_config_api_v1_images_image_config_update_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageConfigForm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/images/models": {
+      "get": {
+        "tags": [
+          "images"
+        ],
+        "summary": "Get Models",
+        "operationId": "get_models_api_v1_images_models_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/images/generations": {
+      "post": {
+        "tags": [
+          "images"
+        ],
+        "summary": "Image Generations",
+        "operationId": "image_generations_api_v1_images_generations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateImageForm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "open_webui__routers__images__ConfigForm": {
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled"
+          },
+          "engine": {
+            "type": "string",
+            "title": "Engine"
+          },
+          "prompt_generation": {
+            "type": "boolean",
+            "title": "Prompt Generation"
+          },
+          "openai": {
+            "$ref": "#/components/schemas/open_webui__routers__images__OpenAIConfigForm"
+          },
+          "automatic1111": {
+            "$ref": "#/components/schemas/Automatic1111ConfigForm"
+          },
+          "comfyui": {
+            "$ref": "#/components/schemas/ComfyUIConfigForm"
+          },
+          "gemini": {
+            "$ref": "#/components/schemas/GeminiConfigForm"
+          }
+        },
+        "type": "object",
+        "required": [
+          "enabled",
+          "engine",
+          "prompt_generation",
+          "openai",
+          "automatic1111",
+          "comfyui",
+          "gemini"
+        ],
+        "title": "ConfigForm"
+      },
+      "ImageConfigForm": {
+        "properties": {
+          "MODEL": {
+            "type": "string",
+            "title": "Model"
+          },
+          "IMAGE_SIZE": {
+            "type": "string",
+            "title": "Image Size"
+          },
+          "IMAGE_STEPS": {
+            "type": "integer",
+            "title": "Image Steps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "MODEL",
+          "IMAGE_SIZE",
+          "IMAGE_STEPS"
+        ],
+        "title": "ImageConfigForm"
+      },
+      "GenerateImageForm": {
+        "properties": {
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "prompt": {
+            "type": "string",
+            "title": "Prompt"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size"
+          },
+          "n": {
+            "type": "integer",
+            "default": 1,
+            "title": "N"
+          },
+          "negative_prompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Negative Prompt"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt"
+        ],
+        "title": "GenerateImageForm"
+      },
+      "open_webui__routers__images__OpenAIConfigForm": {
+        "properties": {
+          "OPENAI_API_BASE_URL": {
+            "type": "string",
+            "title": "Openai Api Base Url"
+          },
+          "OPENAI_API_KEY": {
+            "type": "string",
+            "title": "Openai Api Key"
+          }
+        },
+        "type": "object",
+        "required": [
+          "OPENAI_API_BASE_URL",
+          "OPENAI_API_KEY"
+        ],
+        "title": "OpenAIConfigForm"
+      },
+      "Automatic1111ConfigForm": {
+        "properties": {
+          "AUTOMATIC1111_BASE_URL": {
+            "type": "string",
+            "title": "Automatic1111 Base Url"
+          },
+          "AUTOMATIC1111_API_AUTH": {
+            "type": "string",
+            "title": "Automatic1111 Api Auth"
+          },
+          "AUTOMATIC1111_CFG_SCALE": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Automatic1111 Cfg Scale"
+          },
+          "AUTOMATIC1111_SAMPLER": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Automatic1111 Sampler"
+          },
+          "AUTOMATIC1111_SCHEDULER": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Automatic1111 Scheduler"
+          }
+        },
+        "type": "object",
+        "required": [
+          "AUTOMATIC1111_BASE_URL",
+          "AUTOMATIC1111_API_AUTH",
+          "AUTOMATIC1111_CFG_SCALE",
+          "AUTOMATIC1111_SAMPLER",
+          "AUTOMATIC1111_SCHEDULER"
+        ],
+        "title": "Automatic1111ConfigForm"
+      },
+      "ComfyUIConfigForm": {
+        "properties": {
+          "COMFYUI_BASE_URL": {
+            "type": "string",
+            "title": "Comfyui Base Url"
+          },
+          "COMFYUI_API_KEY": {
+            "type": "string",
+            "title": "Comfyui Api Key"
+          },
+          "COMFYUI_WORKFLOW": {
+            "type": "string",
+            "title": "Comfyui Workflow"
+          },
+          "COMFYUI_WORKFLOW_NODES": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Comfyui Workflow Nodes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "COMFYUI_BASE_URL",
+          "COMFYUI_API_KEY",
+          "COMFYUI_WORKFLOW",
+          "COMFYUI_WORKFLOW_NODES"
+        ],
+        "title": "ComfyUIConfigForm"
+      },
+      "GeminiConfigForm": {
+        "properties": {
+          "GEMINI_API_BASE_URL": {
+            "type": "string",
+            "title": "Gemini Api Base Url"
+          },
+          "GEMINI_API_KEY": {
+            "type": "string",
+            "title": "Gemini Api Key"
+          }
+        },
+        "type": "object",
+        "required": [
+          "GEMINI_API_BASE_URL",
+          "GEMINI_API_KEY"
+        ],
+        "title": "GeminiConfigForm"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

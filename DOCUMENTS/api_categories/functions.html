@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函數管理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 函數管理 API 分類配置
+        const functionsCategory = {
+            name: '函數管理',
+            icon: 'fas fa-code',
+            endpoints: [
+                {
+                    path: '/api/v1/functions/',
+                    method: 'GET',
+                    summary: '獲取函數列表',
+                    description: '獲取所有可用的函數列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/functions/export',
+                    method: 'GET',
+                    summary: '匯出函數',
+                    description: '匯出所有函數的配置',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/functions/load/url',
+                    method: 'POST',
+                    summary: '從 URL 載入函數',
+                    description: '從指定的 URL 載入函數定義',
+                    auth: true,
+                    params: [],
+                    body: {
+                        url: 'https://example.com/function.py'
+                    }
+                },
+                {
+                    path: '/api/v1/functions/sync',
+                    method: 'POST',
+                    summary: '同步函數',
+                    description: '同步函數到系統中',
+                    auth: true,
+                    params: [],
+                    body: {
+                        functions: []
+                    }
+                },
+                {
+                    path: '/api/v1/functions/create',
+                    method: 'POST',
+                    summary: '創建新函數',
+                    description: '創建一個新的自定義函數',
+                    auth: true,
+                    params: [],
+                    body: {
+                        id: 'my_function',
+                        name: '我的函數',
+                        type: 'function',
+                        content: 'def my_function():\n    return "Hello World"',
+                        meta: {
+                            description: '這是一個範例函數',
+                            author: 'user',
+                            version: '1.0.0'
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/functions/id/{id}',
+                    method: 'GET',
+                    summary: '根據 ID 獲取函數',
+                    description: '根據函數 ID 獲取特定函數的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/functions/id/{id}/toggle',
+                    method: 'POST',
+                    summary: '切換函數狀態',
+                    description: '啟用或停用指定的函數',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/functions/id/{id}/toggle/global',
+                    method: 'POST',
+                    summary: '切換函數全域狀態',
+                    description: '切換函數的全域可用性',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/functions/id/{id}/update',
+                    method: 'POST',
+                    summary: '更新函數',
+                    description: '更新指定函數的內容和配置',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: {
+                        name: '更新的函數名稱',
+                        content: 'def updated_function():\n    return "Updated Hello World"',
+                        meta: {
+                            description: '更新後的函數描述',
+                            version: '1.1.0'
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/functions/id/{id}/delete',
+                    method: 'DELETE',
+                    summary: '刪除函數',
+                    description: '刪除指定的函數',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/functions/id/{id}/valves',
+                    method: 'GET',
+                    summary: '獲取函數參數',
+                    description: '獲取函數的可配置參數（valves）',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/functions/id/{id}/valves/spec',
+                    method: 'GET',
+                    summary: '獲取函數參數規格',
+                    description: '獲取函數參數的規格定義',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/functions/id/{id}/valves/update',
+                    method: 'POST',
+                    summary: '更新函數參數',
+                    description: '更新函數的可配置參數值',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: {
+                        valves: {
+                            parameter1: 'value1',
+                            parameter2: 'value2'
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/functions/id/{id}/valves/user',
+                    method: 'GET',
+                    summary: '獲取用戶函數參數',
+                    description: '獲取當前用戶的函數參數設定',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/functions/id/{id}/valves/user/spec',
+                    method: 'GET',
+                    summary: '獲取用戶函數參數規格',
+                    description: '獲取當前用戶的函數參數規格',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/functions/id/{id}/valves/user/update',
+                    method: 'POST',
+                    summary: '更新用戶函數參數',
+                    description: '更新當前用戶的函數參數設定',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '函數 ID', required: true }
+                    ],
+                    body: {
+                        valves: {
+                            user_parameter1: 'user_value1',
+                            user_parameter2: 'user_value2'
+                        }
+                    }
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('functions', functionsCategory);
+        });
+    </script>
+</body>
+</html> 

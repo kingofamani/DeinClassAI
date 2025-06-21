@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>認證授權 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 認證授權 API 分類配置
+        const authsCategory = {
+            name: '認證授權',
+            icon: 'fas fa-user-shield',
+            endpoints: [
+                {
+                    path: '/api/v1/auths/',
+                    method: 'GET',
+                    summary: '獲取當前用戶會話',
+                    description: '獲取當前登入用戶的會話資訊和權限',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/auths/signin',
+                    method: 'POST',
+                    summary: '用戶登入',
+                    description: '使用電子郵件和密碼登入系統',
+                    auth: false,
+                    params: [],
+                    body: {
+                        email: 'user@example.com',
+                        password: 'password123'
+                    }
+                },
+                {
+                    path: '/api/v1/auths/signup',
+                    method: 'POST',
+                    summary: '用戶註冊',
+                    description: '註冊新的用戶帳號',
+                    auth: false,
+                    params: [],
+                    body: {
+                        name: '用戶姓名',
+                        email: 'user@example.com',
+                        password: 'password123',
+                        profile_image_url: '/user.png'
+                    }
+                },
+                {
+                    path: '/api/v1/auths/signout',
+                    method: 'GET',
+                    summary: '用戶登出',
+                    description: '登出當前用戶會話',
+                    auth: false,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/auths/update/profile',
+                    method: 'POST',
+                    summary: '更新用戶資料',
+                    description: '更新當前用戶的個人資料資訊',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: '新的用戶姓名',
+                        profile_image_url: 'https://example.com/avatar.jpg'
+                    }
+                },
+                {
+                    path: '/api/v1/auths/update/password',
+                    method: 'POST',
+                    summary: '更新密碼',
+                    description: '更新當前用戶的登入密碼',
+                    auth: true,
+                    params: [],
+                    body: {
+                        password: 'currentPassword',
+                        new_password: 'newPassword123'
+                    }
+                },
+                {
+                    path: '/api/v1/auths/ldap',
+                    method: 'POST',
+                    summary: 'LDAP 認證',
+                    description: '使用 LDAP 進行用戶認證',
+                    auth: false,
+                    params: [],
+                    body: {
+                        user: 'ldap_username',
+                        password: 'ldap_password'
+                    }
+                },
+                {
+                    path: '/api/v1/auths/add',
+                    method: 'POST',
+                    summary: '添加用戶',
+                    description: '管理員添加新用戶',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: '新用戶姓名',
+                        email: 'newuser@example.com',
+                        password: 'password123',
+                        profile_image_url: '/user.png',
+                        role: 'user'
+                    }
+                },
+                {
+                    path: '/api/v1/auths/admin/details',
+                    method: 'GET',
+                    summary: '獲取管理員詳情',
+                    description: '獲取管理員的詳細資訊',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/auths/admin/config',
+                    method: 'GET',
+                    summary: '獲取管理員配置',
+                    description: '獲取系統管理員配置設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/auths/admin/config',
+                    method: 'POST',
+                    summary: '更新管理員配置',
+                    description: '更新系統管理員配置設定',
+                    auth: true,
+                    params: [],
+                    body: {
+                        SHOW_ADMIN_DETAILS: true,
+                        WEBUI_URL: 'http://localhost:3000',
+                        ENABLE_SIGNUP: true,
+                        ENABLE_API_KEY: true,
+                        ENABLE_API_KEY_ENDPOINT_RESTRICTIONS: false,
+                        API_KEY_ALLOWED_ENDPOINTS: '',
+                        DEFAULT_USER_ROLE: 'user',
+                        JWT_EXPIRES_IN: '7d',
+                        ENABLE_COMMUNITY_SHARING: true,
+                        ENABLE_MESSAGE_RATING: true,
+                        ENABLE_CHANNELS: true,
+                        ENABLE_NOTES: true,
+                        ENABLE_USER_WEBHOOKS: false,
+                        PENDING_USER_OVERLAY_TITLE: null,
+                        PENDING_USER_OVERLAY_CONTENT: null,
+                        RESPONSE_WATERMARK: null
+                    }
+                },
+                {
+                    path: '/api/v1/auths/admin/config/ldap/server',
+                    method: 'GET',
+                    summary: '獲取 LDAP 伺服器配置',
+                    description: '獲取 LDAP 伺服器的配置設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/auths/admin/config/ldap/server',
+                    method: 'POST',
+                    summary: '更新 LDAP 伺服器配置',
+                    description: '更新 LDAP 伺服器的配置設定',
+                    auth: true,
+                    params: [],
+                    body: {
+                        label: 'LDAP 伺服器',
+                        host: 'ldap.example.com',
+                        port: 389,
+                        attribute_for_mail: 'mail',
+                        attribute_for_username: 'uid',
+                        app_dn: 'cn=admin,dc=example,dc=com',
+                        app_dn_password: 'admin_password',
+                        search_base: 'ou=users,dc=example,dc=com',
+                        search_filters: '',
+                        use_tls: true,
+                        certificate_path: null,
+                        validate_cert: true,
+                        ciphers: 'ALL'
+                    }
+                },
+                {
+                    path: '/api/v1/auths/admin/config/ldap',
+                    method: 'GET',
+                    summary: '獲取 LDAP 配置',
+                    description: '獲取 LDAP 認證的配置設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/auths/admin/config/ldap',
+                    method: 'POST',
+                    summary: '更新 LDAP 配置',
+                    description: '更新 LDAP 認證的配置設定',
+                    auth: true,
+                    params: [],
+                    body: {
+                        enable_ldap: true
+                    }
+                },
+                {
+                    path: '/api/v1/auths/api_key',
+                    method: 'GET',
+                    summary: '獲取 API 金鑰',
+                    description: '獲取當前用戶的 API 金鑰',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/auths/api_key',
+                    method: 'POST',
+                    summary: '生成 API 金鑰',
+                    description: '為當前用戶生成新的 API 金鑰',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/auths/api_key',
+                    method: 'DELETE',
+                    summary: '刪除 API 金鑰',
+                    description: '刪除當前用戶的 API 金鑰',
+                    auth: true,
+                    params: [],
+                    body: null
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('auths', authsCategory);
+        });
+    </script>
+</body>
+</html> 

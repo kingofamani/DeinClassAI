@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenWebUI API 完整測試工具</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .api-tester-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .config-section {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .nav-pills .nav-link {
+            border-radius: 15px;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-pills .nav-link.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .nav-pills .nav-link:not(.active) {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .endpoint-card {
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .endpoint-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        .method-badge {
+            font-size: 0.8em;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .method-get { background: #28a745; color: white; }
+        .method-post { background: #007bff; color: white; }
+        .method-put { background: #ffc107; color: black; }
+        .method-delete { background: #dc3545; color: white; }
+        .method-patch { background: #6f42c1; color: white; }
+        
+        .test-button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            border-radius: 25px;
+            padding: 8px 20px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(40, 167, 69, 0.3);
+        }
+        
+        .response-area {
+            background: #2d3748;
+            border-radius: 10px;
+            padding: 15px;
+            color: #e2e8f0;
+            font-family: 'Fira Code', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .search-box {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .endpoint-list {
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-success { background: #28a745; }
+        .status-error { background: #dc3545; }
+        .status-pending { background: #ffc107; }
+        
+        .api-description {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .json-editor {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+        }
+        
+        .loading-spinner {
+            display: none;
+        }
+        
+        .api-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .category-icon {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+        
+        .param-badge {
+            font-size: 0.75em;
+            margin-right: 3px;
+        }
+        
+        .auth-required {
+            color: #ffc107;
+            margin-left: 8px;
+        }
+        
+        .saved-indicator {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #28a745;
+            font-size: 0.9em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .saved-indicator.show {
+            opacity: 1;
+        }
+        
+        .form-control-container {
+            position: relative;
+        }
+        
+        .clear-storage-btn {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            border: none;
+            border-radius: 25px;
+            padding: 8px 20px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .clear-storage-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(220, 53, 69, 0.3);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(45deg, #6c757d, #5a6268);
+            border: none;
+            border-radius: 20px;
+            padding: 6px 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(108, 117, 125, 0.3);
+            color: white;
+            background: linear-gradient(45deg, #5a6268, #495057);
+        }
+        
+        .reset-btn:focus {
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.25);
+            color: white;
+        }
+        
+        .reset-btn.success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            transform: scale(1.05);
+        }
+        
+        .reset-btn.success:hover {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="api-tester-card">
+                    <!-- Header -->
+                    <div class="header-gradient">
+                        <h1><i class="fas fa-code"></i> OpenWebUI API 完整測試工具</h1>
+                        <p class="mb-0">基於官方 API 文檔的完整測試平台</p>
+                        <div class="api-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="totalEndpoints">0</span>
+                                <small>API 端點</small>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="successfulTests">0</span>
+                                <small>成功測試</small>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="failedTests">0</span>
+                                <small>失敗測試</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Section -->
+                    <div class="p-4">
+                        <div class="config-section">
+                            <h5><i class="fas fa-cog"></i> API 配置</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label">API Base URL</label>
+                                    <div class="form-control-container">
+                                        <input type="text" class="form-control" id="apiBaseUrl" value="http://localhost:3000" placeholder="http://localhost:3000">
+                                        <span class="saved-indicator" id="urlSavedIndicator">
+                                            <i class="fas fa-check"></i> 已保存
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">授權 Token</label>
+                                    <div class="form-control-container">
+                                        <input type="password" class="form-control" id="authToken" placeholder="Bearer token (可選)">
+                                        <span class="saved-indicator" id="tokenSavedIndicator">
+                                            <i class="fas fa-check"></i> 已保存
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">請求超時 (秒)</label>
+                                    <div class="form-control-container">
+                                        <input type="number" class="form-control" id="requestTimeout" value="30" min="5" max="120">
+                                        <span class="saved-indicator" id="timeoutSavedIndicator">
+                                            <i class="fas fa-check"></i> 已保存
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <button class="btn test-button" onclick="testConnection()">
+                                        <i class="fas fa-plug"></i> 測試連接
+                                    </button>
+                                    <button class="btn clear-storage-btn ms-2" onclick="clearLocalStorage()">
+                                        <i class="fas fa-trash"></i> 清除設定
+                                    </button>
+                                    <span id="connectionStatus" class="ms-3"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- API Categories Navigation -->
+                        <ul class="nav nav-pills justify-content-center mb-4 flex-wrap" id="apiTabs">
+                            <!-- 動態生成 -->
+                        </ul>
+
+                        <!-- API Content Tabs -->
+                        <div class="tab-content" id="apiTabContent">
+                            <!-- 動態生成的 iframe 內容 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Modal -->
+    <div class="modal fade" id="testModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="testModalTitle">API 測試</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>請求參數</h6>
+                            <div id="requestParams"></div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <h6 class="mb-0">請求體 (JSON)</h6>
+                                <div class="d-flex align-items-center">
+                                    <button type="button" class="btn reset-btn btn-sm me-2" onclick="resetRequestBody()" title="重置為初始值">
+                                        <i class="fas fa-undo"></i> 初始
+                                    </button>
+                                    <span class="saved-indicator" id="bodySavedIndicator">
+                                        <i class="fas fa-check"></i> 已保存
+                                    </span>
+                                </div>
+                            </div>
+                            <textarea class="form-control json-editor" id="requestBody" rows="10" placeholder="{}"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>回應結果</h6>
+                            <div class="response-area" id="responseArea">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-play-circle fa-2x"></i>
+                                    <p class="mt-2">點擊測試按鈕開始</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                    <button type="button" class="btn test-button" id="executeTest">
+                        <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
+                        <i class="fas fa-play"></i> 執行測試
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // API 分類配置 - 現在使用動態載入
+        const apiCategories = {
+            users: {
+                name: '用戶管理',
+                icon: 'fas fa-users',
+                file: 'DOCUMENTS/api_categories/users.html'
+            },
+            chats: {
+                name: '聊天管理',
+                icon: 'fas fa-comments',
+                file: 'DOCUMENTS/api_categories/chats.html'
+            },
+            models: {
+                name: '模型管理',
+                icon: 'fas fa-brain',
+                file: 'DOCUMENTS/api_categories/models.html'
+            },
+            files: {
+                name: '檔案管理',
+                icon: 'fas fa-file',
+                file: 'DOCUMENTS/api_categories/files.html'
+            },
+            folders: {
+                name: '資料夾管理',
+                icon: 'fas fa-folder',
+                file: 'DOCUMENTS/api_categories/folders.html'
+            },
+            prompts: {
+                name: '提示詞管理',
+                icon: 'fas fa-magic',
+                file: 'DOCUMENTS/api_categories/prompts.html'
+            },
+            auths: {
+                name: '認證授權',
+                icon: 'fas fa-user-shield',
+                file: 'DOCUMENTS/api_categories/auths.html'
+            },
+            audio: {
+                name: '音訊處理',
+                icon: 'fas fa-volume-up',
+                file: 'DOCUMENTS/api_categories/audio.html'
+            },
+            configs: {
+                name: '系統配置',
+                icon: 'fas fa-cogs',
+                file: 'DOCUMENTS/api_categories/configs.html'
+            },
+            images: {
+                name: '圖像處理',
+                icon: 'fas fa-image',
+                file: 'DOCUMENTS/api_categories/images.html'
+            },
+            functions: {
+                name: '函數管理',
+                icon: 'fas fa-code',
+                file: 'DOCUMENTS/api_categories/functions.html'
+            },
+            tools: {
+                name: '工具管理',
+                icon: 'fas fa-tools',
+                file: 'DOCUMENTS/api_categories/tools.html'
+            },
+            knowledge: {
+                name: '知識庫管理',
+                icon: 'fas fa-brain',
+                file: 'DOCUMENTS/api_categories/knowledge.html'
+            },
+            memories: {
+                name: '記憶管理',
+                icon: 'fas fa-memory',
+                file: 'DOCUMENTS/api_categories/memories.html'
+            },
+            notes: {
+                name: '筆記管理',
+                icon: 'fas fa-sticky-note',
+                file: 'DOCUMENTS/api_categories/notes.html'
+            },
+            groups: {
+                name: '群組管理',
+                icon: 'fas fa-users-cog',
+                file: 'DOCUMENTS/api_categories/groups.html'
+            },
+            tasks: {
+                name: '任務管理',
+                icon: 'fas fa-tasks',
+                file: 'DOCUMENTS/api_categories/tasks.html'
+            },
+            pipelines: {
+                name: '管道管理',
+                icon: 'fas fa-stream',
+                file: 'DOCUMENTS/api_categories/pipelines.html'
+            },
+            evaluations: {
+                name: '評估管理',
+                icon: 'fas fa-chart-line',
+                file: 'DOCUMENTS/api_categories/evaluations.html'
+            },
+            utils: {
+                name: '工具服務',
+                icon: 'fas fa-wrench',
+                file: 'DOCUMENTS/api_categories/utils.html'
+            },
+            channels: {
+                name: '頻道管理',
+                icon: 'fas fa-hashtag',
+                file: 'DOCUMENTS/api_categories/channels.html'
+            },
+            openai: {
+                name: 'OpenAI API',
+                icon: 'fas fa-robot',
+                file: 'DOCUMENTS/api_categories/openai.html'
+            },
+            ollama: {
+                name: 'Ollama API',
+                icon: 'fas fa-server',
+                file: 'DOCUMENTS/api_categories/ollama.html'
+            }
+        };
+
+        // 全域變數
+        let currentEndpoint = null;
+        let testStats = {
+            total: 0,
+            success: 0,
+            failed: 0
+        };
+
+        // Local Storage 鍵值
+        const STORAGE_KEYS = {
+            API_BASE_URL: 'openwebui_api_base_url',
+            AUTH_TOKEN: 'openwebui_auth_token',
+            REQUEST_TIMEOUT: 'openwebui_request_timeout',
+            REQUEST_BODY: 'openwebui_request_body_'
+        };
+
+        // 初始化應用程式
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            loadSavedSettings();
+            loadApiTabs();
+            loadApiEndpoints();
+            updateStats();
+            setupEventListeners();
+            setupIframeMessageListener();
+        }
+
+        /**
+         * 設置 iframe 訊息監聽器
+         */
+        function setupIframeMessageListener() {
+            window.addEventListener('message', function(event) {
+                try {
+                    // 檢查訊息來源和格式
+                    if (event.data && typeof event.data === 'object') {
+                        if (event.data.action === 'openTestModal') {
+                            const { category, endpointIndex, endpoint } = event.data;
+                            if (category && typeof endpointIndex === 'number' && endpoint) {
+                                console.log(`收到來自 ${category} 的測試請求，端點索引: ${endpointIndex}`);
+                                openTestModalFromCategory(category, endpointIndex, endpoint);
+                            } else {
+                                console.warn('收到格式不正確的測試模態框請求:', event.data);
+                            }
+                        } else if (event.data.action === 'categoryReady') {
+                            const { category, endpointCount } = event.data;
+                            if (category && typeof endpointCount === 'number') {
+                                console.log(`收到 ${category} 分類準備就緒通知，端點數量: ${endpointCount}`);
+                                handleCategoryReady(category, endpointCount);
+                            } else {
+                                console.warn('收到格式不正確的分類準備就緒通知:', event.data);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('處理 iframe 訊息時發生錯誤:', error);
+                }
+            });
+        }
+
+        /**
+         * 處理分類準備就緒事件
+         * @param {string} category - 分類名稱
+         * @param {number} endpointCount - 端點數量
+         */
+        function handleCategoryReady(category, endpointCount) {
+            // 更新該分類的端點數量
+            if (!window.categoryEndpointCounts) {
+                window.categoryEndpointCounts = {};
+            }
+            window.categoryEndpointCounts[category] = endpointCount;
+            
+            // 重新計算總端點數量
+            updateTotalEndpointCount();
+        }
+
+        /**
+         * 更新總端點數量
+         */
+        function updateTotalEndpointCount() {
+            let totalCount = 0;
+            
+            Object.keys(apiCategories).forEach(category => {
+                const categoryData = apiCategories[category];
+                
+                if (categoryData.endpoints) {
+                    // 直接計算內嵌端點
+                    totalCount += categoryData.endpoints.length;
+                } else if (window.categoryEndpointCounts && window.categoryEndpointCounts[category]) {
+                    // 使用從 iframe 收到的端點數量
+                    totalCount += window.categoryEndpointCounts[category];
+                } else {
+                    // 預設值（如果還沒收到通知）
+                    totalCount += 10;
+                }
+            });
+            
+            testStats.total = totalCount;
+            updateStats();
+            console.log(`更新總端點數量: ${totalCount}`);
+        }
+
+        function setupEventListeners() {
+            document.getElementById('executeTest').addEventListener('click', executeCurrentTest);
+            
+            // 監聽配置變更並保存到 Local Storage
+            document.getElementById('apiBaseUrl').addEventListener('input', saveSettings);
+            document.getElementById('authToken').addEventListener('input', saveSettings);
+            document.getElementById('requestTimeout').addEventListener('input', saveSettings);
+            document.getElementById('requestBody').addEventListener('input', saveRequestBody);
+        }
+
+        // 載入保存的設定
+        function loadSavedSettings() {
+            const apiBaseUrl = localStorage.getItem(STORAGE_KEYS.API_BASE_URL);
+            const authToken = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+            const requestTimeout = localStorage.getItem(STORAGE_KEYS.REQUEST_TIMEOUT);
+            
+            if (apiBaseUrl) {
+                document.getElementById('apiBaseUrl').value = apiBaseUrl;
+            }
+            if (authToken) {
+                document.getElementById('authToken').value = authToken;
+            }
+            if (requestTimeout) {
+                document.getElementById('requestTimeout').value = requestTimeout;
+            }
+        }
+
+        // 保存設定到 Local Storage
+        function saveSettings() {
+            const apiBaseUrl = document.getElementById('apiBaseUrl').value;
+            const authToken = document.getElementById('authToken').value;
+            const requestTimeout = document.getElementById('requestTimeout').value;
+            
+            localStorage.setItem(STORAGE_KEYS.API_BASE_URL, apiBaseUrl);
+            localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, authToken);
+            localStorage.setItem(STORAGE_KEYS.REQUEST_TIMEOUT, requestTimeout);
+            
+            // 顯示保存指示器
+            showSavedIndicator('urlSavedIndicator');
+            showSavedIndicator('tokenSavedIndicator');
+            showSavedIndicator('timeoutSavedIndicator');
+        }
+
+        // 顯示保存指示器
+        function showSavedIndicator(indicatorId) {
+            const indicator = document.getElementById(indicatorId);
+            if (indicator) {
+                indicator.classList.add('show');
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        // 重置請求體為初始值
+        function resetRequestBody() {
+            if (!currentEndpoint) {
+                alert('請先選擇一個 API 端點進行測試');
+                return;
+            }
+
+            // 檢查是否有初始請求體
+            if (!currentEndpoint.body) {
+                alert('此 API 端點沒有預設的請求體，無法重置。');
+                return;
+            }
+
+            const requestBodyTextarea = document.getElementById('requestBody');
+            const currentValue = requestBodyTextarea.value.trim();
+            
+            // 獲取初始值
+            const initialValue = JSON.stringify(currentEndpoint.body, null, 2);
+            
+            // 檢查是否已經是初始值
+            if (currentValue === initialValue) {
+                alert('請求體已經是初始值，無需重置。');
+                return;
+            }
+            
+            // 檢查是否有內容需要確認
+            let needConfirm = currentValue !== '' && currentValue !== '{}';
+            
+            if (!needConfirm || confirm('確定要將請求體重置為初始值嗎？這將清除當前的修改內容。')) {
+                // 設置初始值
+                requestBodyTextarea.value = initialValue;
+                
+                // 清除該端點保存的請求體
+                const key = STORAGE_KEYS.REQUEST_BODY + currentEndpoint.category + '_' + currentEndpoint.endpointIndex;
+                localStorage.removeItem(key);
+                
+                // 顯示重置成功提示
+                showResetIndicator();
+                showResetButtonSuccess();
+            }
+        }
+
+        // 顯示重置成功指示器
+        function showResetIndicator() {
+            const indicator = document.getElementById('bodySavedIndicator');
+            if (indicator) {
+                // 暫時改變指示器內容和顏色
+                const originalContent = indicator.innerHTML;
+                const originalColor = indicator.style.color;
+                
+                indicator.innerHTML = '<i class="fas fa-undo"></i> 已重置';
+                indicator.style.color = '#17a2b8'; // 使用藍色表示重置
+                indicator.classList.add('show');
+                
+                setTimeout(() => {
+                    // 恢復原始內容和顏色
+                    indicator.innerHTML = originalContent;
+                    indicator.style.color = originalColor || '#28a745';
+                    indicator.classList.remove('show');
+                }, 2500); // 延長顯示時間到 2.5 秒
+            }
+        }
+
+        // 顯示重置按鈕成功狀態
+        function showResetButtonSuccess() {
+            // 找到重置按鈕（通過事件查找更可靠）
+            const resetButton = document.querySelector('button[onclick="resetRequestBody()"]');
+            if (resetButton) {
+                // 暫時改變按鈕內容和樣式
+                const originalContent = resetButton.innerHTML;
+                
+                resetButton.innerHTML = '<i class="fas fa-check"></i> 完成';
+                resetButton.classList.add('success');
+                resetButton.disabled = true;
+                
+                setTimeout(() => {
+                    // 恢復原始內容和樣式
+                    resetButton.innerHTML = originalContent;
+                    resetButton.classList.remove('success');
+                    resetButton.disabled = false;
+                }, 1500);
+            }
+        }
+
+        // 保存請求體到 Local Storage
+        function saveRequestBody() {
+            if (currentEndpoint) {
+                const requestBody = document.getElementById('requestBody').value;
+                const key = STORAGE_KEYS.REQUEST_BODY + currentEndpoint.category + '_' + currentEndpoint.endpointIndex;
+                localStorage.setItem(key, requestBody);
+                
+                // 顯示保存指示器
+                showSavedIndicator('bodySavedIndicator');
+            }
+        }
+
+        // 載入保存的請求體
+        function loadSavedRequestBody() {
+            if (currentEndpoint) {
+                const key = STORAGE_KEYS.REQUEST_BODY + currentEndpoint.category + '_' + currentEndpoint.endpointIndex;
+                const savedBody = localStorage.getItem(key);
+                if (savedBody) {
+                    document.getElementById('requestBody').value = savedBody;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // 清除 Local Storage
+        function clearLocalStorage() {
+            // 計算要清除的項目數量
+            let requestBodyCount = 0;
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith(STORAGE_KEYS.REQUEST_BODY)) {
+                    requestBodyCount++;
+                }
+            });
+            
+            const message = `確定要清除所有保存的設定嗎？\n\n將清除以下內容：\n• API Base URL\n• 授權 Token\n• 請求超時設定\n• ${requestBodyCount} 個保存的請求體\n\n此操作無法復原！`;
+            
+            if (confirm(message)) {
+                let clearedCount = 0;
+                
+                // 清除所有相關的 Local Storage 項目
+                Object.values(STORAGE_KEYS).forEach(key => {
+                    if (key.endsWith('_')) {
+                        // 對於請求體，需要清除所有以此前綴開始的項目
+                        Object.keys(localStorage).forEach(storageKey => {
+                            if (storageKey.startsWith(key)) {
+                                localStorage.removeItem(storageKey);
+                                clearedCount++;
+                            }
+                        });
+                    } else {
+                        localStorage.removeItem(key);
+                        clearedCount++;
+                    }
+                });
+                
+                // 重置表單值為預設值
+                document.getElementById('apiBaseUrl').value = 'http://localhost:3000';
+                document.getElementById('authToken').value = '';
+                document.getElementById('requestTimeout').value = '30';
+                document.getElementById('requestBody').value = '';
+                
+                // 清除連接狀態
+                document.getElementById('connectionStatus').innerHTML = '';
+                
+                // 隱藏所有保存指示器
+                document.querySelectorAll('.saved-indicator').forEach(indicator => {
+                    indicator.classList.remove('show');
+                });
+                
+                // 重置所有按鈕狀態
+                document.querySelectorAll('.reset-btn').forEach(button => {
+                    button.classList.remove('success');
+                    button.disabled = false;
+                });
+                
+                alert(`已成功清除 ${clearedCount} 個保存的設定項目！`);
+            }
+        }
+
+        function loadApiTabs() {
+            const tabsContainer = document.getElementById('apiTabs');
+            const contentContainer = document.getElementById('apiTabContent');
+            
+            let isFirst = true;
+            Object.keys(apiCategories).forEach(category => {
+                const categoryData = apiCategories[category];
+                
+                // 創建標籤
+                const tabItem = document.createElement('li');
+                tabItem.className = 'nav-item';
+                tabItem.innerHTML = `
+                    <a class="nav-link ${isFirst ? 'active' : ''}" data-bs-toggle="pill" href="#${category}">
+                        <i class="${categoryData.icon} category-icon"></i>${categoryData.name}
+                    </a>
+                `;
+                tabsContainer.appendChild(tabItem);
+                
+                // 創建內容容器
+                const tabContent = document.createElement('div');
+                tabContent.className = `tab-pane fade ${isFirst ? 'show active' : ''}`;
+                tabContent.id = category;
+                
+                if (categoryData.file) {
+                    // 使用 iframe 載入外部檔案
+                    tabContent.innerHTML = `
+                        <iframe 
+                            id="${category}-iframe" 
+                            src="${categoryData.file}" 
+                            style="width: 100%; height: 600px; border: none; border-radius: 15px;">
+                        </iframe>
+                    `;
+                } else {
+                    // 舊版本的內嵌方式（向後相容）
+                    tabContent.innerHTML = `
+                        <div class="search-box">
+                            <input type="text" class="form-control" placeholder="搜尋 ${categoryData.name} API..." onkeyup="filterEndpoints('${category}', this.value)">
+                        </div>
+                        <div class="endpoint-list" id="${category}-endpoints"></div>
+                    `;
+                }
+                
+                contentContainer.appendChild(tabContent);
+                
+                isFirst = false;
+            });
+        }
+
+        function loadApiEndpoints() {
+            Object.keys(apiCategories).forEach(category => {
+                const categoryData = apiCategories[category];
+                
+                // 只處理有 endpoints 屬性的分類（舊版本相容）
+                if (categoryData.endpoints) {
+                    const container = document.getElementById(`${category}-endpoints`);
+                    if (container) {
+                        categoryData.endpoints.forEach((endpoint, index) => {
+                            const endpointCard = createEndpointCard(endpoint, category, index);
+                            container.appendChild(endpointCard);
+                        });
+                    }
+                }
+                // 對於使用檔案的分類，端點數量會在 iframe 載入後通過 postMessage 更新
+            });
+            
+            // 初始更新統計數據
+            updateTotalEndpointCount();
+        }
+
+
+
+        function createEndpointCard(endpoint, category, index) {
+            const card = document.createElement('div');
+            card.className = 'endpoint-card p-3';
+            card.innerHTML = `
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="method-badge method-${endpoint.method.toLowerCase()}">${endpoint.method}</span>
+                            <code class="ms-2 text-primary">${endpoint.path}</code>
+                            ${endpoint.auth ? '<i class="fas fa-lock auth-required" title="需要授權"></i>' : ''}
+                        </div>
+                        <h6 class="mb-1">${endpoint.summary}</h6>
+                        <p class="api-description mb-2">${endpoint.description}</p>
+                        ${endpoint.params && endpoint.params.length > 0 ? `
+                            <div class="mb-2">
+                                <small class="text-muted">參數: </small>
+                                ${endpoint.params.map(p => `<span class="badge bg-light text-dark param-badge">${p.name}${p.required ? '*' : ''}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="ms-3">
+                        <button class="btn test-button btn-sm" onclick="openTestModal('${category}', ${index})">
+                            <i class="fas fa-play"></i> 測試
+                        </button>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function openTestModal(category, endpointIndex) {
+            const endpoint = apiCategories[category].endpoints[endpointIndex];
+            currentEndpoint = { category, endpointIndex, ...endpoint };
+            
+            document.getElementById('testModalTitle').textContent = `${endpoint.method} ${endpoint.path}`;
+            
+            // 設置參數
+            setupRequestParams(endpoint);
+            
+            // 設置請求體
+            setupRequestBody(endpoint);
+            
+            // 清空回應區域
+            resetResponseArea();
+            
+            // 顯示模態框
+            new bootstrap.Modal(document.getElementById('testModal')).show();
+        }
+
+        function setupRequestParams(endpoint) {
+            const paramsContainer = document.getElementById('requestParams');
+            paramsContainer.innerHTML = '';
+            
+            if (endpoint.params && endpoint.params.length > 0) {
+                endpoint.params.forEach(param => {
+                    const paramDiv = document.createElement('div');
+                    paramDiv.className = 'mb-3';
+                    paramDiv.innerHTML = `
+                        <label class="form-label">
+                            ${param.name} ${param.required ? '<span class="text-danger">*</span>' : ''}
+                            <small class="text-muted">(${param.type})</small>
+                        </label>
+                        <input type="text" class="form-control" name="${param.name}" 
+                               placeholder="${param.description}" 
+                               ${param.default ? `value="${param.default}"` : ''}>
+                        <small class="form-text text-muted">${param.description}</small>
+                    `;
+                    paramsContainer.appendChild(paramDiv);
+                });
+            } else {
+                paramsContainer.innerHTML = '<p class="text-muted">此 API 不需要參數</p>';
+            }
+        }
+
+        function setupRequestBody(endpoint) {
+            const requestBodyTextarea = document.getElementById('requestBody');
+            const resetButton = document.querySelector('button[onclick="resetRequestBody()"]');
+            
+            // 首先嘗試載入保存的請求體
+            if (!loadSavedRequestBody()) {
+                // 如果沒有保存的請求體，則使用預設值
+                if (endpoint.body) {
+                    requestBodyTextarea.value = JSON.stringify(endpoint.body, null, 2);
+                } else {
+                    requestBodyTextarea.value = '';
+                }
+            }
+            
+            // 根據是否有初始請求體來設置重置按鈕狀態
+            if (resetButton) {
+                if (endpoint.body) {
+                    resetButton.disabled = false;
+                    resetButton.title = '重置為初始值';
+                    resetButton.style.opacity = '1';
+                } else {
+                    resetButton.disabled = true;
+                    resetButton.title = '此 API 沒有預設請求體';
+                    resetButton.style.opacity = '0.5';
+                }
+            }
+        }
+
+        function resetResponseArea() {
+            document.getElementById('responseArea').innerHTML = `
+                <div class="text-center text-muted">
+                    <i class="fas fa-play-circle fa-2x"></i>
+                    <p class="mt-2">點擊測試按鈕開始</p>
+                </div>
+            `;
+        }
+
+        async function executeCurrentTest() {
+            if (!currentEndpoint) return;
+            
+            const executeBtn = document.getElementById('executeTest');
+            const spinner = executeBtn.querySelector('.loading-spinner');
+            const responseArea = document.getElementById('responseArea');
+            
+            // 顯示載入狀態
+            executeBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            
+            try {
+                const result = await performApiRequest();
+                displayResponse(result);
+                
+                if (result.success) {
+                    testStats.success++;
+                } else {
+                    testStats.failed++;
+                }
+                updateStats();
+                
+            } catch (error) {
+                displayError(error);
+                testStats.failed++;
+                updateStats();
+            } finally {
+                executeBtn.disabled = false;
+                spinner.style.display = 'none';
+            }
+        }
+
+        async function performApiRequest() {
+            // 收集參數
+            const params = collectRequestParams();
+            
+            // 獲取請求體
+            const requestBody = getRequestBody();
+            
+            // 建構 URL
+            const url = buildRequestUrl(params);
+            
+            // 準備請求選項
+            const requestOptions = buildRequestOptions(requestBody);
+            
+            // 發送請求
+            const startTime = Date.now();
+            const response = await fetch(url.toString(), requestOptions);
+            const endTime = Date.now();
+            
+            // 解析回應
+            const responseData = await parseResponse(response);
+            
+            return {
+                success: response.ok,
+                status: response.status,
+                statusText: response.statusText,
+                headers: response.headers,
+                data: responseData,
+                responseTime: endTime - startTime
+            };
+        }
+
+        function collectRequestParams() {
+            const params = {};
+            const paramInputs = document.querySelectorAll('#requestParams input');
+            paramInputs.forEach(input => {
+                if (input.value.trim()) {
+                    params[input.name] = input.value.trim();
+                }
+            });
+            return params;
+        }
+
+        function getRequestBody() {
+            const bodyText = document.getElementById('requestBody').value.trim();
+            if (bodyText && currentEndpoint.method !== 'GET') {
+                try {
+                    return JSON.parse(bodyText);
+                } catch (e) {
+                    throw new Error('請求體 JSON 格式錯誤: ' + e.message);
+                }
+            }
+            return null;
+        }
+
+        function buildRequestUrl(params) {
+            const baseUrl = document.getElementById('apiBaseUrl').value.trim();
+            const url = new URL(currentEndpoint.path, baseUrl);
+            
+            Object.keys(params).forEach(key => {
+                url.searchParams.append(key, params[key]);
+            });
+            
+            return url;
+        }
+
+        function buildRequestOptions(requestBody) {
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            
+            const authToken = document.getElementById('authToken').value.trim();
+            if (currentEndpoint.auth && authToken) {
+                headers['Authorization'] = authToken.startsWith('Bearer ') ? authToken : `Bearer ${authToken}`;
+            }
+            
+            const options = {
+                method: currentEndpoint.method,
+                headers: headers
+            };
+            
+            if (requestBody && currentEndpoint.method !== 'GET') {
+                options.body = JSON.stringify(requestBody);
+            }
+            
+            const timeout = parseInt(document.getElementById('requestTimeout').value) * 1000;
+            const controller = new AbortController();
+            setTimeout(() => controller.abort(), timeout);
+            options.signal = controller.signal;
+            
+            return options;
+        }
+
+        async function parseResponse(response) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return await response.json();
+            } else {
+                return await response.text();
+            }
+        }
+
+        function displayResponse(result) {
+            const responseArea = document.getElementById('responseArea');
+            const statusClass = result.success ? 'text-success' : 'text-danger';
+            const statusIcon = result.success ? 'fa-check-circle' : 'fa-times-circle';
+            
+            responseArea.innerHTML = `
+                <div class="mb-3">
+                    <span class="status-indicator ${result.success ? 'status-success' : 'status-error'}"></span>
+                    <strong class="${statusClass}">
+                        <i class="fas ${statusIcon}"></i> 
+                        ${result.status} ${result.statusText}
+                    </strong>
+                    <small class="text-muted ms-3">回應時間: ${result.responseTime}ms</small>
+                </div>
+                <div class="mb-2">
+                    <strong>回應標頭:</strong>
+                    <pre class="mt-1 p-2 bg-dark text-light rounded"><code>${Array.from(result.headers.entries()).map(([k, v]) => `${k}: ${v}`).join('\n')}</code></pre>
+                </div>
+                <div>
+                    <strong>回應內容:</strong>
+                    <pre class="mt-1 p-2 bg-dark text-light rounded"><code>${typeof result.data === 'object' ? JSON.stringify(result.data, null, 2) : result.data}</code></pre>
+                </div>
+            `;
+        }
+
+        function displayError(error) {
+            const responseArea = document.getElementById('responseArea');
+            responseArea.innerHTML = `
+                <div class="text-danger">
+                    <span class="status-indicator status-error"></span>
+                    <strong><i class="fas fa-times-circle"></i> 請求失敗</strong>
+                    <pre class="mt-2 p-2 bg-danger text-white rounded"><code>${error.message}</code></pre>
+                </div>
+            `;
+        }
+
+        async function testConnection() {
+            const baseUrl = document.getElementById('apiBaseUrl').value.trim();
+            const statusSpan = document.getElementById('connectionStatus');
+            
+            try {
+                statusSpan.innerHTML = '<span class="status-indicator status-pending"></span>測試中...';
+                
+                const response = await fetch(`${baseUrl}/api/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    statusSpan.innerHTML = '<span class="status-indicator status-success"></span>連接成功';
+                } else {
+                    statusSpan.innerHTML = '<span class="status-indicator status-error"></span>連接失敗';
+                }
+            } catch (error) {
+                statusSpan.innerHTML = '<span class="status-indicator status-error"></span>連接錯誤: ' + error.message;
+            }
+        }
+
+        function filterEndpoints(category, searchTerm) {
+            const container = document.getElementById(`${category}-endpoints`);
+            const cards = container.querySelectorAll('.endpoint-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm.toLowerCase())) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('totalEndpoints').textContent = testStats.total;
+            document.getElementById('successfulTests').textContent = testStats.success;
+            document.getElementById('failedTests').textContent = testStats.failed;
+        }
+
+
+
+        /**
+         * 從分類檔案打開測試模態框
+         * @param {string} category - 分類名稱
+         * @param {number} endpointIndex - 端點索引
+         * @param {Object} endpoint - 端點物件
+         */
+        function openTestModalFromCategory(category, endpointIndex, endpoint) {
+            currentEndpoint = { category, endpointIndex, ...endpoint };
+            
+            document.getElementById('testModalTitle').textContent = `${endpoint.method} ${endpoint.path}`;
+            
+            // 設置參數
+            setupRequestParams(endpoint);
+            
+            // 設置請求體
+            setupRequestBody(endpoint);
+            
+            // 清空回應區域
+            resetResponseArea();
+            
+            // 顯示模態框
+            new bootstrap.Modal(document.getElementById('testModal')).show();
+        }
+    </script>
+</body>
+</html> 

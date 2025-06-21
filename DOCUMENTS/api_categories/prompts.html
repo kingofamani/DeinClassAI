@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提示詞管理 API</title>
+    <link rel="stylesheet" href="../shared/api-styles.css">
+</head>
+<body>
+    <div class="api-category-container">
+        <div class="search-box">
+            <input type="text" class="form-control" placeholder="搜尋提示詞管理 API..." onkeyup="filterEndpoints('prompts', this.value)">
+        </div>
+        <div class="endpoint-list" id="prompts-endpoints"></div>
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 提示詞管理分類定義
+        const promptsCategory = {
+            name: '提示詞管理',
+            icon: 'fas fa-magic',
+            endpoints: [
+                {
+                    path: '/api/v1/prompts/',
+                    method: 'GET',
+                    summary: '獲取提示詞列表',
+                    description: '獲取用戶的提示詞列表（基本模型）',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/prompts/list',
+                    method: 'GET',
+                    summary: '獲取提示詞清單',
+                    description: '獲取提示詞清單（包含用戶資訊）',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/prompts/create',
+                    method: 'POST',
+                    summary: '創建新提示詞',
+                    description: '創建新的提示詞',
+                    auth: true,
+                    params: [],
+                    body: {
+                        command: '/example',
+                        title: '範例提示詞',
+                        content: '這是一個範例提示詞內容',
+                        access_control: null
+                    }
+                },
+                {
+                    path: '/api/v1/prompts/command/{command}',
+                    method: 'GET',
+                    summary: '根據指令獲取提示詞',
+                    description: '根據指令名稱獲取特定提示詞',
+                    auth: true,
+                    params: [
+                        { name: 'command', type: 'string', description: '提示詞指令名稱', required: true, in: 'path' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/prompts/command/{command}/update',
+                    method: 'POST',
+                    summary: '根據指令更新提示詞',
+                    description: '根據指令名稱更新提示詞內容',
+                    auth: true,
+                    params: [
+                        { name: 'command', type: 'string', description: '提示詞指令名稱', required: true, in: 'path' }
+                    ],
+                    body: {
+                        command: '/updated_example',
+                        title: '更新的提示詞',
+                        content: '更新的提示詞內容',
+                        access_control: null
+                    }
+                },
+                {
+                    path: '/api/v1/prompts/command/{command}/delete',
+                    method: 'DELETE',
+                    summary: '根據指令刪除提示詞',
+                    description: '根據指令名稱刪除提示詞',
+                    auth: true,
+                    params: [
+                        { name: 'command', type: 'string', description: '提示詞指令名稱', required: true, in: 'path' }
+                    ],
+                    body: null
+                }
+            ]
+        };
+
+        // 初始化分類頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('prompts', promptsCategory);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>記憶管理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 記憶管理 API 分類配置
+        const memoriesCategory = {
+            name: '記憶管理',
+            icon: 'fas fa-memory',
+            endpoints: [
+                {
+                    path: '/api/v1/memories/ef',
+                    method: 'GET',
+                    summary: '獲取嵌入向量',
+                    description: '獲取記憶的嵌入向量資訊',
+                    auth: false,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/memories/',
+                    method: 'GET',
+                    summary: '獲取記憶列表',
+                    description: '獲取所有記憶的列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/memories/add',
+                    method: 'POST',
+                    summary: '添加記憶',
+                    description: '添加新的記憶到系統中',
+                    auth: true,
+                    params: [],
+                    body: {
+                        content: '這是一個重要的記憶內容',
+                        metadata: {
+                            source: 'user_input',
+                            timestamp: '2024-01-01T12:00:00Z',
+                            tags: ['重要', '工作']
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/memories/query',
+                    method: 'POST',
+                    summary: '查詢記憶',
+                    description: '根據查詢條件搜尋相關記憶',
+                    auth: true,
+                    params: [],
+                    body: {
+                        query: '關於工作的記憶',
+                        limit: 10,
+                        threshold: 0.7
+                    }
+                },
+                {
+                    path: '/api/v1/memories/reset',
+                    method: 'POST',
+                    summary: '重置記憶向量資料庫',
+                    description: '清空並重置記憶的向量資料庫',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/memories/delete/user',
+                    method: 'DELETE',
+                    summary: '根據用戶 ID 刪除記憶',
+                    description: '刪除特定用戶的所有記憶',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/memories/{memory_id}/update',
+                    method: 'POST',
+                    summary: '更新記憶',
+                    description: '更新指定記憶的內容',
+                    auth: true,
+                    params: [
+                        { name: 'memory_id', type: 'string', description: '記憶 ID', required: true }
+                    ],
+                    body: {
+                        content: '更新後的記憶內容',
+                        metadata: {
+                            updated_at: '2024-01-02T12:00:00Z',
+                            tags: ['更新', '重要']
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/memories/{memory_id}',
+                    method: 'DELETE',
+                    summary: '刪除記憶',
+                    description: '根據記憶 ID 刪除特定記憶',
+                    auth: true,
+                    params: [
+                        { name: 'memory_id', type: 'string', description: '記憶 ID', required: true }
+                    ],
+                    body: null
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('memories', memoriesCategory);
+        });
+    </script>
+</body>
+</html> 

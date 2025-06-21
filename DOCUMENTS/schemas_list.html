@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema 列表</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        .schema-item { border: 1px solid #ccc; margin-bottom: 10px; padding: 10px; border-radius: 5px; }
+        .schema-title { font-weight: bold; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<h1>Schema 列表</h1>
+
+<ul>
+    <li class="schema-item">
+        <div class="schema-title">AddMemoryForm</div>
+        <div>說明：用於添加記憶體的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">AddPipelineForm</div>
+        <div>說明：用於添加管道的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">AddUserForm</div>
+        <div>說明：用於添加用戶的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">AdminConfig</div>
+        <div>說明：用於管理員配置的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ApiKey</div>
+        <div>說明：API 金鑰的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">AudioConfigUpdateForm</div>
+        <div>說明：用於更新音訊配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">Automatic1111ConfigForm</div>
+        <div>說明：用於 Automatic1111 (可能是 Stable Diffusion 的介面) 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">AzureOpenAIConfigForm</div>
+        <div>說明：用於 Azure OpenAI 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">BannerModel</div>
+        <div>說明：用於顯示橫幅廣告的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">BatchProcessFilesForm</div>
+        <div>說明：用於批次處理文件的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">BatchProcessFilesResponse</div>
+        <div>說明：批次處理文件操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">BatchProcessFilesResult</div>
+        <div>說明：批次處理文件操作的結果數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">Body_transcription_api_v1_audio_transcriptions_post</div>
+        <div>說明：用於音訊轉錄 API POST 請求的請求體結構。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">Body_upload_file_api_v1_files__post</div>
+        <div>說明：用於上傳文件 API POST 請求的請求體結構。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">Body_upload_model_ollama_models_upload__url_idx__post</div>
+        <div>說明：用於通過 URL 上傳 Ollama 模型 (可能包含索引) 的 POST 請求體結構。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">Body_upload_model_ollama_models_upload_post</div>
+        <div>說明：用於上傳 Ollama 模型的 POST 請求體結構。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">Body_upload_pipeline_api_v1_pipelines_upload_post</div>
+        <div>說明：用於上傳管道 API POST 請求的請求體結構。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ChannelForm</div>
+        <div>說明：用於設置頻道的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ChannelModel</div>
+        <div>說明：頻道的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ChatFolderIdForm</div>
+        <div>說明：用於設置聊天文件夾 ID 的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ChatForm</div>
+        <div>說明：用於設置聊天的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ChatImportForm</div>
+        <div>說明：用於匯入聊天的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ChatPermissions</div>
+        <div>說明：聊天相關的權限設置。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ChatResponse</div>
+        <div>說明：聊天操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ChatTitleIdResponse</div>
+        <div>說明：包含聊天標題和 ID 的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ChatTitleMessagesForm</div>
+        <div>說明：用於設置聊天標題和消息的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">CloneForm</div>
+        <div>說明：用於複製操作的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">CodeForm</div>
+        <div>說明：與程式碼相關的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">CodeInterpreterConfigForm</div>
+        <div>說明：用於程式碼解釋器配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ComfyUIConfigForm</div>
+        <div>說明：用於 ComfyUI 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ContentForm</div>
+        <div>說明：用於內容相關的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">CopyModelForm</div>
+        <div>說明：用於複製模型的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">CreateModelForm</div>
+        <div>說明：用於創建模型的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">DeleteForm</div>
+        <div>說明：用於刪除操作的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">DeletePipelineForm</div>
+        <div>說明：用於刪除管道的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">DirectConnectionsConfigForm</div>
+        <div>說明：用於直接連接配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">EmbeddingModelUpdateForm</div>
+        <div>說明：用於更新嵌入模型 (embedding model) 的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">EventForm</div>
+        <div>說明：用於事件的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FeaturesPermissions</div>
+        <div>說明：功能相關的權限設置。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FeedbackForm</div>
+        <div>說明：用於收集回饋的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FeedbackModel</div>
+        <div>說明：回饋的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FeedbackUserResponse</div>
+        <div>說明：用戶回饋相關的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FileMeta</div>
+        <div>說明：文件的元數據。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FileMetadataResponse</div>
+        <div>說明：文件元數據的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FileModel</div>
+        <div>說明：文件的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FileModelResponse</div>
+        <div>說明：文件模型響應的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FolderForm</div>
+        <div>說明：用於文件夾的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FolderIsExpandedForm</div>
+        <div>說明：用於設置文件夾是否展開的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FolderModel</div>
+        <div>說明：文件夾的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FolderParentIdForm</div>
+        <div>說明：用於設置文件夾父級 ID 的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FunctionForm</div>
+        <div>說明：與功能相關的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FunctionMeta</div>
+        <div>說明：功能的元數據。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FunctionModel</div>
+        <div>說明：功能的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">FunctionResponse</div>
+        <div>說明：功能操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">GeminiConfigForm</div>
+        <div>說明：用於 Gemini 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">GenerateCompletionForm</div>
+        <div>說明：用於生成文本補全的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">GenerateEmbedForm</div>
+        <div>說明：用於生成嵌入 (embedding) 的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">GenerateEmbeddingsForm</div>
+        <div>說明：用於生成嵌入向量的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">GenerateImageForm</div>
+        <div>說明：用於生成圖片的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">GroupForm</div>
+        <div>說明：用於群組的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">GroupResponse</div>
+        <div>說明：群組操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">GroupUpdateForm</div>
+        <div>說明：用於更新群組的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">HTTPValidationError</div>
+        <div>說明：HTTP 驗證錯誤的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ImageConfigForm</div>
+        <div>說明：用於圖片配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ImportConfigForm</div>
+        <div>說明：用於匯入配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">KnowledgeFileIdForm</div>
+        <div>說明：用於知識文件 ID 的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">KnowledgeFilesResponse</div>
+        <div>說明：知識文件列表的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">KnowledgeForm</div>
+        <div>說明：用於知識的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">KnowledgeResponse</div>
+        <div>說明：知識操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">KnowledgeUserResponse</div>
+        <div>說明：用戶知識相關的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">LdapConfigForm</div>
+        <div>說明：用於 LDAP 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">LdapForm</div>
+        <div>說明：用於 LDAP 相關的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">LdapServerConfig</div>
+        <div>說明：LDAP 伺服器配置的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">LoadUrlForm</div>
+        <div>說明：用於載入 URL 的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">MarkdownForm</div>
+        <div>說明：用於 Markdown 內容的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">MemoryModel</div>
+        <div>說明：記憶體的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">MemoryUpdateModel</div>
+        <div>說明：用於更新記憶體的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">MessageModel</div>
+        <div>說明：消息的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">MessageUserResponse</div>
+        <div>說明：用戶消息相關的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ModelForm</div>
+        <div>說明：用於模型的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ModelMeta</div>
+        <div>說明：模型的元數據。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ModelModel</div>
+        <div>說明：模型的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ModelNameForm</div>
+        <div>說明：用於設置模型名稱的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ModelParams</div>
+        <div>說明：模型的參數。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ModelResponse</div>
+        <div>說明：模型操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ModelUserResponse</div>
+        <div>說明：用戶模型相關的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ModelsConfigForm</div>
+        <div>說明：用於模型配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">NoteForm</div>
+        <div>說明：用於筆記的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">NoteModel</div>
+        <div>說明：筆記的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">NoteUserResponse</div>
+        <div>說明：用戶筆記相關的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ProcessFileForm</div>
+        <div>說明：用於處理文件的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ProcessTextForm</div>
+        <div>說明：用於處理文本的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ProcessUrlForm</div>
+        <div>說明：用於處理 URL 的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">PromptForm</div>
+        <div>說明：用於提示的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">PromptModel</div>
+        <div>說明：提示的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">PromptSuggestion</div>
+        <div>說明：提示建議的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">PromptUserResponse</div>
+        <div>說明：用戶提示相關的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">PushModelForm</div>
+        <div>說明：用於推送模型的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">QueryCollectionsForm</div>
+        <div>說明：用於查詢集合的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">QueryDocForm</div>
+        <div>說明：用於查詢文檔的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">QueryMemoryForm</div>
+        <div>說明：用於查詢記憶體的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">RatingData</div>
+        <div>說明：評分的數據。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ReactionForm</div>
+        <div>說明：用於反應的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">Reactions</div>
+        <div>說明：反應數據的集合。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">STTConfigForm</div>
+        <div>說明：用於語音轉文字 (Speech-to-Text) 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">SearchForm</div>
+        <div>說明：用於搜尋的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">SessionUserResponse</div>
+        <div>說明：用戶會話相關的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">SetBannersForm</div>
+        <div>說明：用於設置橫幅廣告的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">SetDefaultSuggestionsForm</div>
+        <div>說明：用於設置預設建議的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">SharingPermissions</div>
+        <div>說明：共享相關的權限設置。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">SigninForm</div>
+        <div>說明：用於登入的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">SigninResponse</div>
+        <div>說明：登入操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">SignupForm</div>
+        <div>說明：用於註冊的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">SnapshotData</div>
+        <div>說明：快照的數據。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">SyncFunctionsForm</div>
+        <div>說明：用於同步功能的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">TTSConfigForm</div>
+        <div>說明：用於文字轉語音 (Text-to-Speech) 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">TagFilterForm</div>
+        <div>說明：用於標籤篩選的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">TagForm</div>
+        <div>說明：用於標籤的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">TagModel</div>
+        <div>說明：標籤的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">TaskConfigForm</div>
+        <div>說明：用於任務配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ToolForm</div>
+        <div>說明：用於工具的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ToolMeta</div>
+        <div>說明：工具的元數據。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ToolModel</div>
+        <div>說明：工具的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ToolResponse</div>
+        <div>說明：工具操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ToolServerConnection</div>
+        <div>說明：工具伺服器連接的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ToolServersConfigForm</div>
+        <div>說明：用於工具伺服器配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ToolUserResponse</div>
+        <div>說明：用戶工具相關的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UpdateConfigForm</div>
+        <div>說明：用於更新配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UpdatePasswordForm</div>
+        <div>說明：用於更新密碼的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UpdateProfileForm</div>
+        <div>說明：用於更新個人資料的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UrlForm</div>
+        <div>說明：用於 URL 的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UserListResponse</div>
+        <div>說明：用戶列表的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UserModel</div>
+        <div>說明：用戶的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UserNameResponse</div>
+        <div>說明：用戶名稱的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UserPermissions</div>
+        <div>說明：用戶權限的設置。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UserSettings</div>
+        <div>說明：用戶設定的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UserUpdateForm</div>
+        <div>說明：用於更新用戶信息的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ValidationError</div>
+        <div>說明：驗證錯誤的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">WebConfig</div>
+        <div>說明：Web 相關配置的數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">WorkspacePermissions</div>
+        <div>說明：工作區權限的設置。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UserResponse</div>
+        <div>說明：用戶操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">MessageForm</div>
+        <div>說明：用於消息的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UserResponse</div>
+        <div>說明：用戶操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">MessageForm</div>
+        <div>說明：用於消息的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UserResponse</div>
+        <div>說明：用戶操作的響應數據模型。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ConfigForm</div>
+        <div>說明：通用的配置表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">OpenAIConfigForm</div>
+        <div>說明：用於 OpenAI 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ConnectionVerificationForm</div>
+        <div>說明：用於連接驗證的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">OllamaConfigForm</div>
+        <div>說明：用於 Ollama 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ConnectionVerificationForm</div>
+        <div>說明：用於連接驗證的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">OpenAIConfigForm</div>
+        <div>說明：用於 OpenAI 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">ConfigForm</div>
+        <div>說明：通用的配置表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">OllamaConfigForm</div>
+        <div>說明：用於 Ollama 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">OpenAIConfigForm</div>
+        <div>說明：用於 OpenAI 配置的表單。</div>
+    </li>
+    <li class="schema-item">
+        <div class="schema-title">UserResponse</div>
+        <div>說明：用戶操作的響應數據模型。</div>
+    </li>
+</ul>
+
+</body>
+</html>

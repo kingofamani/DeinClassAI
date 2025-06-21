@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任務管理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 任務管理 API 分類配置
+        const tasksCategory = {
+            name: '任務管理',
+            icon: 'fas fa-tasks',
+            endpoints: [
+                {
+                    path: '/api/v1/tasks/config',
+                    method: 'GET',
+                    summary: '獲取任務配置',
+                    description: '獲取系統任務的配置設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/tasks/config/update',
+                    method: 'POST',
+                    summary: '更新任務配置',
+                    description: '更新系統任務的配置設定',
+                    auth: true,
+                    params: [],
+                    body: {
+                        title_generation_template: '為以下對話生成一個簡潔的標題：\n\n{{prompt}}',
+                        tags_generation_template: '為以下對話生成相關標籤：\n\n{{prompt}}',
+                        queries_generation_template: '為以下對話生成搜尋查詢：\n\n{{prompt}}'
+                    }
+                },
+                {
+                    path: '/api/v1/tasks/title/completions',
+                    method: 'POST',
+                    summary: '生成標題',
+                    description: '根據對話內容自動生成標題',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'gpt-3.5-turbo',
+                        prompt: '用戶: 你好，請幫我解釋什麼是機器學習\n助手: 機器學習是人工智慧的一個分支...'
+                    }
+                },
+                {
+                    path: '/api/v1/tasks/follow_up/completions',
+                    method: 'POST',
+                    summary: '生成後續問題',
+                    description: '根據對話內容生成相關的後續問題',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'gpt-3.5-turbo',
+                        prompt: '關於機器學習的對話內容...'
+                    }
+                },
+                {
+                    path: '/api/v1/tasks/tags/completions',
+                    method: 'POST',
+                    summary: '生成聊天標籤',
+                    description: '根據對話內容自動生成相關標籤',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'gpt-3.5-turbo',
+                        prompt: '關於機器學習的技術討論...'
+                    }
+                },
+                {
+                    path: '/api/v1/tasks/image_prompt/completions',
+                    method: 'POST',
+                    summary: '生成圖像提示詞',
+                    description: '根據文字描述生成圖像生成的提示詞',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'gpt-3.5-turbo',
+                        prompt: '一隻可愛的小貓在花園裡玩耍'
+                    }
+                },
+                {
+                    path: '/api/v1/tasks/queries/completions',
+                    method: 'POST',
+                    summary: '生成查詢',
+                    description: '根據對話內容生成搜尋查詢',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'gpt-3.5-turbo',
+                        prompt: '我想了解深度學習的基本概念'
+                    }
+                },
+                {
+                    path: '/api/v1/tasks/auto/completions',
+                    method: 'POST',
+                    summary: '自動完成',
+                    description: '根據輸入內容進行自動完成',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'gpt-3.5-turbo',
+                        prompt: '機器學習的主要應用領域包括'
+                    }
+                },
+                {
+                    path: '/api/v1/tasks/emoji/completions',
+                    method: 'POST',
+                    summary: '生成表情符號',
+                    description: '根據文字內容生成相關的表情符號',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'gpt-3.5-turbo',
+                        prompt: '今天天氣真好，心情很愉快'
+                    }
+                },
+                {
+                    path: '/api/v1/tasks/moa/completions',
+                    method: 'POST',
+                    summary: 'MOA 完成',
+                    description: '混合專家模型（Mixture of Agents）完成任務',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'gpt-3.5-turbo',
+                        prompt: '請分析這個問題的多個角度',
+                        agents: ['analyst', 'critic', 'synthesizer']
+                    }
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('tasks', tasksCategory);
+        });
+    </script>
+</body>
+</html> 

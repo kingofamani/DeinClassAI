@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具管理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 工具管理 API 分類配置
+        const toolsCategory = {
+            name: '工具管理',
+            icon: 'fas fa-tools',
+            endpoints: [
+                {
+                    path: '/api/v1/tools/',
+                    method: 'GET',
+                    summary: '獲取工具列表',
+                    description: '獲取所有可用的工具列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/tools/list',
+                    method: 'GET',
+                    summary: '獲取工具清單',
+                    description: '獲取工具的詳細清單資訊',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/tools/load/url',
+                    method: 'POST',
+                    summary: '從 URL 載入工具',
+                    description: '從指定的 URL 載入工具定義',
+                    auth: true,
+                    params: [],
+                    body: {
+                        url: 'https://example.com/tool.py'
+                    }
+                },
+                {
+                    path: '/api/v1/tools/export',
+                    method: 'GET',
+                    summary: '匯出工具',
+                    description: '匯出所有工具的配置',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/tools/create',
+                    method: 'POST',
+                    summary: '創建新工具',
+                    description: '創建一個新的自定義工具',
+                    auth: true,
+                    params: [],
+                    body: {
+                        id: 'my_tool',
+                        name: '我的工具',
+                        content: 'def my_tool():\n    return "Tool result"',
+                        meta: {
+                            description: '這是一個範例工具',
+                            author: 'user',
+                            version: '1.0.0',
+                            required_params: []
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/tools/id/{id}',
+                    method: 'GET',
+                    summary: '根據 ID 獲取工具',
+                    description: '根據工具 ID 獲取特定工具的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '工具 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/tools/id/{id}/update',
+                    method: 'POST',
+                    summary: '更新工具',
+                    description: '更新指定工具的內容和配置',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '工具 ID', required: true }
+                    ],
+                    body: {
+                        name: '更新的工具名稱',
+                        content: 'def updated_tool():\n    return "Updated tool result"',
+                        meta: {
+                            description: '更新後的工具描述',
+                            version: '1.1.0'
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/tools/id/{id}/delete',
+                    method: 'DELETE',
+                    summary: '刪除工具',
+                    description: '刪除指定的工具',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '工具 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/tools/id/{id}/valves',
+                    method: 'GET',
+                    summary: '獲取工具參數',
+                    description: '獲取工具的可配置參數（valves）',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '工具 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/tools/id/{id}/valves/spec',
+                    method: 'GET',
+                    summary: '獲取工具參數規格',
+                    description: '獲取工具參數的規格定義',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '工具 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/tools/id/{id}/valves/update',
+                    method: 'POST',
+                    summary: '更新工具參數',
+                    description: '更新工具的可配置參數值',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '工具 ID', required: true }
+                    ],
+                    body: {
+                        valves: {
+                            parameter1: 'value1',
+                            parameter2: 'value2'
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/tools/id/{id}/valves/user',
+                    method: 'GET',
+                    summary: '獲取用戶工具參數',
+                    description: '獲取當前用戶的工具參數設定',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '工具 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/tools/id/{id}/valves/user/spec',
+                    method: 'GET',
+                    summary: '獲取用戶工具參數規格',
+                    description: '獲取當前用戶的工具參數規格',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '工具 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/tools/id/{id}/valves/user/update',
+                    method: 'POST',
+                    summary: '更新用戶工具參數',
+                    description: '更新當前用戶的工具參數設定',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '工具 ID', required: true }
+                    ],
+                    body: {
+                        valves: {
+                            user_parameter1: 'user_value1',
+                            user_parameter2: 'user_value2'
+                        }
+                    }
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('tools', toolsCategory);
+        });
+    </script>
+</body>
+</html> 

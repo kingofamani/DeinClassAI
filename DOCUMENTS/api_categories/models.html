@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模型管理 API</title>
+    <link rel="stylesheet" href="../shared/api-styles.css">
+</head>
+<body>
+    <div class="api-category-container">
+        <div class="search-box">
+            <input type="text" class="form-control" placeholder="搜尋模型管理 API..." onkeyup="filterEndpoints('models', this.value)">
+        </div>
+        <div class="endpoint-list" id="models-endpoints"></div>
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 模型管理分類定義
+        const modelsCategory = {
+            name: '模型管理',
+            icon: 'fas fa-brain',
+            endpoints: [
+                {
+                    path: '/api/v1/models/',
+                    method: 'GET',
+                    summary: '獲取模型列表',
+                    description: '獲取可用的 AI 模型列表，可指定特定模型 ID',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '特定模型 ID' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/models/base',
+                    method: 'GET',
+                    summary: '獲取基礎模型',
+                    description: '獲取所有基礎模型配置列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/models/create',
+                    method: 'POST',
+                    summary: '創建新模型',
+                    description: '創建一個新的自定義模型',
+                    auth: true,
+                    params: [],
+                    body: {
+                        id: 'custom-model-001',
+                        name: '自定義模型',
+                        base_model_id: 'gpt-3.5-turbo',
+                        params: {
+                            temperature: 0.7,
+                            max_tokens: 2048,
+                            top_p: 1.0
+                        },
+                        meta: {
+                            profile_image_url: '/static/favicon.png',
+                            description: '這是一個自定義的 AI 模型',
+                            capabilities: {
+                                vision: false,
+                                usage: 'chat'
+                            }
+                        },
+                        access_control: {
+                            read: {
+                                group_ids: [],
+                                user_ids: []
+                            },
+                            write: {
+                                group_ids: [],
+                                user_ids: []
+                            }
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/models/model',
+                    method: 'GET',
+                    summary: '根據 ID 獲取模型',
+                    description: '根據模型 ID 獲取特定模型的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '模型 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/models/model/toggle',
+                    method: 'POST',
+                    summary: '根據 ID 切換模型狀態',
+                    description: '啟用或停用指定的模型',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '模型 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/models/model/update',
+                    method: 'POST',
+                    summary: '根據 ID 更新模型',
+                    description: '更新指定模型的配置和參數',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '模型 ID', required: true }
+                    ],
+                    body: {
+                        name: '更新的模型名稱',
+                        params: {
+                            temperature: 0.8,
+                            max_tokens: 4096,
+                            top_p: 0.9
+                        },
+                        meta: {
+                            description: '更新的模型描述',
+                            capabilities: {
+                                vision: true,
+                                usage: 'chat'
+                            }
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/models/model/delete',
+                    method: 'DELETE',
+                    summary: '根據 ID 刪除模型',
+                    description: '刪除指定的自定義模型',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '模型 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/models/delete/all',
+                    method: 'DELETE',
+                    summary: '刪除所有模型',
+                    description: '刪除所有自定義模型（危險操作）',
+                    auth: true,
+                    params: [],
+                    body: null
+                }
+            ]
+        };
+
+        // 初始化分類頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('models', modelsCategory);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用戶管理 API</title>
+    <link rel="stylesheet" href="../shared/api-styles.css">
+</head>
+<body>
+    <div class="api-category-container">
+        <div class="search-box">
+            <input type="text" class="form-control" placeholder="搜尋用戶管理 API..." onkeyup="filterEndpoints('users', this.value)">
+        </div>
+        <div class="endpoint-list" id="users-endpoints"></div>
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 用戶管理分類定義
+        const usersCategory = {
+            name: '用戶管理',
+            icon: 'fas fa-users',
+            endpoints: [
+                {
+                    path: '/api/v1/users/active',
+                    method: 'GET',
+                    summary: '獲取活躍用戶',
+                    description: '獲取當前活躍的用戶列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/',
+                    method: 'GET',
+                    summary: '獲取用戶列表',
+                    description: '獲取系統中的用戶列表，支援分頁、搜尋和排序',
+                    auth: true,
+                    params: [
+                        { name: 'query', type: 'string', description: '搜尋關鍵字' },
+                        { name: 'order_by', type: 'string', description: '排序欄位' },
+                        { name: 'direction', type: 'string', description: '排序方向 (asc/desc)' },
+                        { name: 'page', type: 'integer', description: '頁碼', default: 1 }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/all',
+                    method: 'GET',
+                    summary: '獲取所有用戶',
+                    description: '獲取系統中的所有用戶（不分頁）',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/groups',
+                    method: 'GET',
+                    summary: '獲取用戶群組',
+                    description: '獲取用戶群組資訊',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/permissions',
+                    method: 'GET',
+                    summary: '獲取用戶權限',
+                    description: '獲取當前用戶的權限設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/default/permissions',
+                    method: 'GET',
+                    summary: '獲取預設用戶權限',
+                    description: '獲取系統預設的用戶權限設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/default/permissions',
+                    method: 'POST',
+                    summary: '更新預設用戶權限',
+                    description: '更新系統預設的用戶權限設定',
+                    auth: true,
+                    params: [],
+                    body: {
+                        chat: {
+                            deletion: true,
+                            edit: true
+                        },
+                        workspace: {
+                            models: true,
+                            knowledge: true,
+                            prompts: true,
+                            tools: true
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/users/user/settings',
+                    method: 'GET',
+                    summary: '根據會話用戶獲取用戶設定',
+                    description: '獲取當前會話用戶的個人設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/user/settings/update',
+                    method: 'POST',
+                    summary: '根據會話用戶更新用戶設定',
+                    description: '更新當前會話用戶的個人設定',
+                    auth: true,
+                    params: [],
+                    body: {
+                        ui: {
+                            theme: 'dark',
+                            language: 'zh-TW'
+                        },
+                        models: ['gpt-3.5-turbo'],
+                        system: 'You are a helpful assistant.'
+                    }
+                },
+                {
+                    path: '/api/v1/users/user/info',
+                    method: 'GET',
+                    summary: '根據會話用戶獲取用戶資訊',
+                    description: '獲取當前會話用戶的詳細資訊',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/user/info/update',
+                    method: 'POST',
+                    summary: '根據會話用戶更新用戶資訊',
+                    description: '更新當前會話用戶的詳細資訊',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: '用戶姓名',
+                        email: 'user@example.com',
+                        profile_image_url: 'https://example.com/avatar.jpg'
+                    }
+                },
+                {
+                    path: '/api/v1/users/{user_id}',
+                    method: 'GET',
+                    summary: '根據 ID 獲取用戶',
+                    description: '根據用戶 ID 獲取特定用戶的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'user_id', type: 'string', description: '用戶 ID', required: true, in: 'path' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/{user_id}',
+                    method: 'DELETE',
+                    summary: '根據 ID 刪除用戶',
+                    description: '刪除指定 ID 的用戶帳號',
+                    auth: true,
+                    params: [
+                        { name: 'user_id', type: 'string', description: '用戶 ID', required: true, in: 'path' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/{user_id}/active',
+                    method: 'GET',
+                    summary: '根據 ID 獲取用戶活躍狀態',
+                    description: '獲取指定用戶的活躍狀態資訊',
+                    auth: true,
+                    params: [
+                        { name: 'user_id', type: 'string', description: '用戶 ID', required: true, in: 'path' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/users/{user_id}/update',
+                    method: 'POST',
+                    summary: '根據 ID 更新用戶',
+                    description: '更新指定 ID 用戶的資訊',
+                    auth: true,
+                    params: [
+                        { name: 'user_id', type: 'string', description: '用戶 ID', required: true, in: 'path' }
+                    ],
+                    body: {
+                        name: '更新的用戶姓名',
+                        email: 'updated@example.com',
+                        role: 'user',
+                        profile_image_url: 'https://example.com/new-avatar.jpg'
+                    }
+                }
+            ]
+        };
+
+        // 初始化分類頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('users', usersCategory);
+        });
+    </script>
+</body>
+</html> 

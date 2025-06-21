@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>檔案管理 API</title>
+    <link rel="stylesheet" href="../shared/api-styles.css">
+</head>
+<body>
+    <div class="api-category-container">
+        <div class="search-box">
+            <input type="text" class="form-control" placeholder="搜尋檔案管理 API..." onkeyup="filterEndpoints('files', this.value)">
+        </div>
+        <div class="endpoint-list" id="files-endpoints"></div>
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 檔案管理分類定義
+        const filesCategory = {
+            name: '檔案管理',
+            icon: 'fas fa-file',
+            endpoints: [
+                {
+                    path: '/api/v1/files/',
+                    method: 'POST',
+                    summary: '上傳檔案',
+                    description: '上傳新檔案到系統，支援檔案處理和內部標記',
+                    auth: true,
+                    params: [
+                        { name: 'process', type: 'boolean', description: '是否處理檔案', default: true },
+                        { name: 'internal', type: 'boolean', description: '是否為內部檔案', default: false }
+                    ],
+                    body: {
+                        file: 'multipart/form-data 檔案內容',
+                        filename: 'example.txt'
+                    }
+                },
+                {
+                    path: '/api/v1/files/',
+                    method: 'GET',
+                    summary: '列出檔案',
+                    description: '獲取用戶的檔案列表',
+                    auth: true,
+                    params: [
+                        { name: 'content', type: 'boolean', description: '是否包含檔案內容', default: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/files/search',
+                    method: 'GET',
+                    summary: '搜尋檔案',
+                    description: '根據檔名模式搜尋檔案，支援萬用字元如 *.txt',
+                    auth: true,
+                    params: [
+                        { name: 'filename', type: 'string', description: '檔名模式 (支援萬用字元如 *.txt)', required: true },
+                        { name: 'content', type: 'boolean', description: '是否包含檔案內容', default: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/files/all',
+                    method: 'DELETE',
+                    summary: '刪除所有檔案',
+                    description: '刪除用戶的所有檔案（危險操作）',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/files/{id}',
+                    method: 'GET',
+                    summary: '根據 ID 獲取檔案',
+                    description: '根據檔案 ID 獲取特定檔案的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '檔案 ID', required: true, in: 'path' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/files/{id}',
+                    method: 'DELETE',
+                    summary: '根據 ID 刪除檔案',
+                    description: '刪除指定 ID 的檔案',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '檔案 ID', required: true, in: 'path' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/files/{id}/data/content',
+                    method: 'GET',
+                    summary: '根據 ID 獲取檔案數據內容',
+                    description: '獲取檔案的原始數據內容',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '檔案 ID', required: true, in: 'path' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/files/{id}/data/content/update',
+                    method: 'POST',
+                    summary: '根據 ID 更新檔案數據內容',
+                    description: '更新檔案的數據內容',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '檔案 ID', required: true, in: 'path' }
+                    ],
+                    body: {
+                        content: '更新的檔案內容'
+                    }
+                },
+                {
+                    path: '/api/v1/files/{id}/content',
+                    method: 'GET',
+                    summary: '根據 ID 獲取檔案內容',
+                    description: '獲取檔案內容，可選擇作為附件下載',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '檔案 ID', required: true, in: 'path' },
+                        { name: 'attachment', type: 'boolean', description: '是否作為附件下載', default: false }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/files/{id}/content/html',
+                    method: 'GET',
+                    summary: '根據 ID 獲取 HTML 檔案內容',
+                    description: '獲取檔案的 HTML 格式內容',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '檔案 ID', required: true, in: 'path' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/files/{id}/content/{file_name}',
+                    method: 'GET',
+                    summary: '根據 ID 和檔名獲取檔案內容',
+                    description: '根據檔案 ID 和指定檔名獲取檔案內容',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '檔案 ID', required: true, in: 'path' },
+                        { name: 'file_name', type: 'string', description: '檔案名稱', required: true, in: 'path' }
+                    ],
+                    body: null
+                }
+            ]
+        };
+
+        // 初始化分類頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('files', filesCategory);
+        });
+    </script>
+</body>
+</html> 

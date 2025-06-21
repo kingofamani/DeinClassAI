@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管道管理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 管道管理 API 分類配置
+        const pipelinesCategory = {
+            name: '管道管理',
+            icon: 'fas fa-stream',
+            endpoints: [
+                {
+                    path: '/api/v1/pipelines/list',
+                    method: 'GET',
+                    summary: '獲取管道列表',
+                    description: '獲取所有可用管道的列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/pipelines/upload',
+                    method: 'POST',
+                    summary: '上傳管道',
+                    description: '上傳新的管道檔案',
+                    auth: true,
+                    params: [],
+                    body: {
+                        file: '(檔案上傳)',
+                        urlIdx: 0
+                    }
+                },
+                {
+                    path: '/api/v1/pipelines/add',
+                    method: 'POST',
+                    summary: '添加管道',
+                    description: '透過 URL 添加新的管道',
+                    auth: true,
+                    params: [],
+                    body: {
+                        url: 'https://github.com/user/pipeline.py',
+                        urlIdx: 0
+                    }
+                },
+                {
+                    path: '/api/v1/pipelines/delete',
+                    method: 'DELETE',
+                    summary: '刪除管道',
+                    description: '刪除指定的管道',
+                    auth: true,
+                    params: [],
+                    body: {
+                        id: 'pipeline_id',
+                        urlIdx: 0
+                    }
+                },
+                {
+                    path: '/api/v1/pipelines/',
+                    method: 'GET',
+                    summary: '獲取管道',
+                    description: '獲取管道的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'urlIdx', type: 'integer', description: 'URL 索引', required: false }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/pipelines/{pipeline_id}/valves',
+                    method: 'GET',
+                    summary: '獲取管道閥門',
+                    description: '獲取指定管道的閥門配置',
+                    auth: true,
+                    params: [
+                        { name: 'pipeline_id', type: 'string', description: '管道 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/pipelines/{pipeline_id}/valves/spec',
+                    method: 'GET',
+                    summary: '獲取管道閥門規格',
+                    description: '獲取指定管道的閥門規格定義',
+                    auth: true,
+                    params: [
+                        { name: 'pipeline_id', type: 'string', description: '管道 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/pipelines/{pipeline_id}/valves/update',
+                    method: 'POST',
+                    summary: '更新管道閥門',
+                    description: '更新指定管道的閥門配置',
+                    auth: true,
+                    params: [
+                        { name: 'pipeline_id', type: 'string', description: '管道 ID', required: true }
+                    ],
+                    body: {
+                        valves: {
+                            API_KEY: 'your_api_key_here',
+                            MODEL_NAME: 'gpt-3.5-turbo',
+                            TEMPERATURE: 0.7,
+                            MAX_TOKENS: 1000
+                        }
+                    }
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('pipelines', pipelinesCategory);
+        });
+    </script>
+</body>
+</html> 

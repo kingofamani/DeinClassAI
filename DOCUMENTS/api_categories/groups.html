@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>群組管理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 群組管理 API 分類配置
+        const groupsCategory = {
+            name: '群組管理',
+            icon: 'fas fa-users',
+            endpoints: [
+                {
+                    path: '/api/v1/groups/',
+                    method: 'GET',
+                    summary: '獲取群組列表',
+                    description: '獲取所有群組的列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/groups/create',
+                    method: 'POST',
+                    summary: '創建新群組',
+                    description: '創建一個新的群組',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: '新群組名稱',
+                        description: '群組描述',
+                        permissions: {
+                            chat: {
+                                file_upload: true,
+                                delete: true
+                            },
+                            workspace: {
+                                models: true,
+                                knowledge: true
+                            }
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/groups/id/{id}',
+                    method: 'GET',
+                    summary: '根據 ID 獲取群組',
+                    description: '根據群組 ID 獲取特定群組的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '群組 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/groups/id/{id}/update',
+                    method: 'POST',
+                    summary: '更新群組',
+                    description: '根據群組 ID 更新群組資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '群組 ID', required: true }
+                    ],
+                    body: {
+                        name: '更新後的群組名稱',
+                        description: '更新後的群組描述',
+                        permissions: {
+                            chat: {
+                                file_upload: false,
+                                delete: true
+                            },
+                            workspace: {
+                                models: true,
+                                knowledge: false
+                            }
+                        }
+                    }
+                },
+                {
+                    path: '/api/v1/groups/id/{id}/delete',
+                    method: 'DELETE',
+                    summary: '刪除群組',
+                    description: '根據群組 ID 刪除特定群組',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '群組 ID', required: true }
+                    ],
+                    body: null
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('groups', groupsCategory);
+        });
+    </script>
+</body>
+</html> 

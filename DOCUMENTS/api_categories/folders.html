@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料夾管理 API</title>
+    <link rel="stylesheet" href="../shared/api-styles.css">
+</head>
+<body>
+    <div class="api-category-container">
+        <div class="search-box">
+            <input type="text" class="form-control" placeholder="搜尋資料夾管理 API..." onkeyup="filterEndpoints('folders', this.value)">
+        </div>
+        <div class="endpoint-list" id="folders-endpoints"></div>
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 資料夾管理分類定義
+        const foldersCategory = {
+            name: '資料夾管理',
+            icon: 'fas fa-folder',
+            endpoints: [
+                {
+                    path: '/api/v1/folders/',
+                    method: 'GET',
+                    summary: '獲取資料夾列表',
+                    description: '獲取用戶的所有資料夾，包含層級結構',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/folders/',
+                    method: 'POST',
+                    summary: '創建資料夾',
+                    description: '創建新的資料夾',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: '新資料夾'
+                    }
+                },
+                {
+                    path: '/api/v1/folders/{id}',
+                    method: 'GET',
+                    summary: '根據 ID 獲取資料夾',
+                    description: '根據資料夾 ID 獲取特定資料夾的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '資料夾 ID', required: true, in: 'path' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/folders/{id}',
+                    method: 'DELETE',
+                    summary: '根據 ID 刪除資料夾',
+                    description: '刪除指定 ID 的資料夾',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '資料夾 ID', required: true, in: 'path' }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/folders/{id}/update',
+                    method: 'POST',
+                    summary: '根據 ID 更新資料夾名稱',
+                    description: '更新指定資料夾的名稱',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '資料夾 ID', required: true, in: 'path' }
+                    ],
+                    body: {
+                        name: '更新的資料夾名稱'
+                    }
+                },
+                {
+                    path: '/api/v1/folders/{id}/update/parent',
+                    method: 'POST',
+                    summary: '根據 ID 更新資料夾父級',
+                    description: '更新資料夾的父級關係，用於移動資料夾',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '資料夾 ID', required: true, in: 'path' }
+                    ],
+                    body: {
+                        parent_id: 'parent_folder_id_or_null'
+                    }
+                },
+                {
+                    path: '/api/v1/folders/{id}/update/expanded',
+                    method: 'POST',
+                    summary: '根據 ID 更新資料夾展開狀態',
+                    description: '更新資料夾在 UI 中的展開/收合狀態',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '資料夾 ID', required: true, in: 'path' }
+                    ],
+                    body: {
+                        is_expanded: true
+                    }
+                }
+            ]
+        };
+
+        // 初始化分類頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('folders', foldersCategory);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>筆記管理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 筆記管理 API 分類配置
+        const notesCategory = {
+            name: '筆記管理',
+            icon: 'fas fa-sticky-note',
+            endpoints: [
+                {
+                    path: '/api/v1/notes/',
+                    method: 'GET',
+                    summary: '獲取筆記列表',
+                    description: '獲取用戶的所有筆記',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/notes/list',
+                    method: 'GET',
+                    summary: '獲取筆記清單',
+                    description: '獲取筆記的詳細清單',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/notes/create',
+                    method: 'POST',
+                    summary: '創建新筆記',
+                    description: '創建一個新的筆記',
+                    auth: true,
+                    params: [],
+                    body: {
+                        title: '我的新筆記',
+                        content: '這是筆記的內容...',
+                        tags: ['重要', '工作'],
+                        is_public: false
+                    }
+                },
+                {
+                    path: '/api/v1/notes/{id}',
+                    method: 'GET',
+                    summary: '根據 ID 獲取筆記',
+                    description: '根據筆記 ID 獲取特定筆記的詳細資訊',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '筆記 ID', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/notes/{id}/update',
+                    method: 'POST',
+                    summary: '更新筆記',
+                    description: '根據筆記 ID 更新筆記內容',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '筆記 ID', required: true }
+                    ],
+                    body: {
+                        title: '更新後的筆記標題',
+                        content: '更新後的筆記內容...',
+                        tags: ['更新', '重要'],
+                        is_public: false
+                    }
+                },
+                {
+                    path: '/api/v1/notes/{id}/delete',
+                    method: 'DELETE',
+                    summary: '刪除筆記',
+                    description: '根據筆記 ID 刪除特定筆記',
+                    auth: true,
+                    params: [
+                        { name: 'id', type: 'string', description: '筆記 ID', required: true }
+                    ],
+                    body: null
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('notes', notesCategory);
+        });
+    </script>
+</body>
+</html> 

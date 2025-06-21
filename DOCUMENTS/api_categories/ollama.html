@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // Ollama API 分類配置
+        const ollamaCategory = {
+            name: 'Ollama API',
+            icon: 'fas fa-server',
+            endpoints: [
+                {
+                    path: '/ollama/',
+                    method: 'GET',
+                    summary: '獲取 Ollama 狀態',
+                    description: '檢查 Ollama 服務的運行狀態',
+                    auth: false,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/ollama/verify',
+                    method: 'POST',
+                    summary: '驗證 Ollama 連接',
+                    description: '驗證與 Ollama 服務的連接',
+                    auth: true,
+                    params: [],
+                    body: {
+                        url: 'http://localhost:11434'
+                    }
+                },
+                {
+                    path: '/ollama/config',
+                    method: 'GET',
+                    summary: '獲取 Ollama 配置',
+                    description: '獲取 Ollama 的配置設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/ollama/config/update',
+                    method: 'POST',
+                    summary: '更新 Ollama 配置',
+                    description: '更新 Ollama 的配置設定',
+                    auth: true,
+                    params: [],
+                    body: {
+                        OLLAMA_BASE_URLS: ['http://localhost:11434'],
+                        OLLAMA_API_CONFIGS: {}
+                    }
+                },
+                {
+                    path: '/ollama/api/tags',
+                    method: 'GET',
+                    summary: '獲取模型標籤',
+                    description: '獲取 Ollama 中可用的模型列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/ollama/api/ps',
+                    method: 'GET',
+                    summary: '獲取運行中的模型',
+                    description: '獲取當前正在運行的模型列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/ollama/api/version',
+                    method: 'GET',
+                    summary: '獲取 Ollama 版本',
+                    description: '獲取 Ollama 服務的版本資訊',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/ollama/api/pull',
+                    method: 'POST',
+                    summary: '拉取模型',
+                    description: '從 Ollama 倉庫拉取模型',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: 'llama2:7b',
+                        stream: false
+                    }
+                },
+                {
+                    path: '/ollama/api/push',
+                    method: 'POST',
+                    summary: '推送模型',
+                    description: '將模型推送到 Ollama 倉庫',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: 'my-model:latest',
+                        stream: false
+                    }
+                },
+                {
+                    path: '/ollama/api/create',
+                    method: 'POST',
+                    summary: '創建模型',
+                    description: '從 Modelfile 創建新模型',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: 'my-custom-model',
+                        modelfile: 'FROM llama2:7b\nSYSTEM "You are a helpful assistant."',
+                        stream: false
+                    }
+                },
+                {
+                    path: '/ollama/api/copy',
+                    method: 'POST',
+                    summary: '複製模型',
+                    description: '複製現有模型',
+                    auth: true,
+                    params: [],
+                    body: {
+                        source: 'llama2:7b',
+                        destination: 'my-llama2:7b'
+                    }
+                },
+                {
+                    path: '/ollama/api/delete',
+                    method: 'DELETE',
+                    summary: '刪除模型',
+                    description: '刪除指定的模型',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: 'my-model:latest'
+                    }
+                },
+                {
+                    path: '/ollama/api/show',
+                    method: 'POST',
+                    summary: '顯示模型資訊',
+                    description: '顯示模型的詳細資訊',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: 'llama2:7b'
+                    }
+                },
+                {
+                    path: '/ollama/api/generate',
+                    method: 'POST',
+                    summary: '生成文本',
+                    description: '使用指定模型生成文本',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'llama2:7b',
+                        prompt: '請解釋什麼是機器學習',
+                        stream: false,
+                        options: {
+                            temperature: 0.7,
+                            top_p: 0.9
+                        }
+                    }
+                },
+                {
+                    path: '/ollama/api/chat',
+                    method: 'POST',
+                    summary: '聊天對話',
+                    description: '與模型進行聊天對話',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'llama2:7b',
+                        messages: [
+                            {
+                                role: 'user',
+                                content: '你好，請介紹一下你自己'
+                            }
+                        ],
+                        stream: false,
+                        options: {
+                            temperature: 0.7
+                        }
+                    }
+                },
+                {
+                    path: '/ollama/api/embeddings',
+                    method: 'POST',
+                    summary: '生成嵌入向量',
+                    description: '為文本生成嵌入向量',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'llama2:7b',
+                        prompt: '這是一個測試文本'
+                    }
+                },
+                {
+                    path: '/ollama/v1/chat/completions',
+                    method: 'POST',
+                    summary: 'OpenAI 兼容聊天完成',
+                    description: '使用 OpenAI 兼容的 API 格式進行聊天完成',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'llama2:7b',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: '你是一個有用的助手'
+                            },
+                            {
+                                role: 'user',
+                                content: '你好'
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 1000
+                    }
+                },
+                {
+                    path: '/ollama/v1/completions',
+                    method: 'POST',
+                    summary: 'OpenAI 兼容文本完成',
+                    description: '使用 OpenAI 兼容的 API 格式進行文本完成',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'llama2:7b',
+                        prompt: '機器學習是',
+                        max_tokens: 100,
+                        temperature: 0.7
+                    }
+                },
+                {
+                    path: '/ollama/v1/models',
+                    method: 'GET',
+                    summary: 'OpenAI 兼容模型列表',
+                    description: '使用 OpenAI 兼容的格式獲取模型列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/ollama/models/download',
+                    method: 'POST',
+                    summary: '下載模型',
+                    description: '下載指定的模型到本地',
+                    auth: true,
+                    params: [],
+                    body: {
+                        name: 'llama2:7b'
+                    }
+                },
+                {
+                    path: '/ollama/models/upload',
+                    method: 'POST',
+                    summary: '上傳模型',
+                    description: '上傳模型檔案',
+                    auth: true,
+                    params: [],
+                    body: {
+                        file: '(模型檔案)',
+                        name: 'my-uploaded-model'
+                    }
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('ollama', ollamaCategory);
+        });
+    </script>
+</body>
+</html> 

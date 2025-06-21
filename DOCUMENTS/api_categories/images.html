@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圖像處理 API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../shared/api-styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="main-container" class="container-fluid p-0">
+        <!-- 內容將由 JavaScript 動態生成 -->
+    </div>
+
+    <script src="../shared/api-common.js"></script>
+    <script>
+        // 圖像處理 API 分類配置
+        const imagesCategory = {
+            name: '圖像處理',
+            icon: 'fas fa-image',
+            endpoints: [
+                {
+                    path: '/api/v1/images/config',
+                    method: 'GET',
+                    summary: '獲取圖像配置',
+                    description: '獲取當前的圖像處理配置設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/images/config/update',
+                    method: 'POST',
+                    summary: '更新圖像配置',
+                    description: '更新圖像處理的配置設定',
+                    auth: true,
+                    params: [],
+                    body: {
+                        ENABLED: true,
+                        ENGINE: 'openai',
+                        OPENAI_API_BASE_URL: 'https://api.openai.com/v1',
+                        OPENAI_API_KEY: 'your_openai_api_key',
+                        MODEL: 'dall-e-3',
+                        SIZE: '1024x1024',
+                        QUALITY: 'standard',
+                        STYLE: 'vivid',
+                        STEPS: 20
+                    }
+                },
+                {
+                    path: '/api/v1/images/config/url/verify',
+                    method: 'GET',
+                    summary: '驗證圖像服務 URL',
+                    description: '驗證圖像服務的 URL 連線是否正常',
+                    auth: true,
+                    params: [
+                        { name: 'url', type: 'string', description: '要驗證的 URL', required: true }
+                    ],
+                    body: null
+                },
+                {
+                    path: '/api/v1/images/image/config',
+                    method: 'GET',
+                    summary: '獲取圖像生成配置',
+                    description: '獲取圖像生成的詳細配置設定',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/images/image/config/update',
+                    method: 'POST',
+                    summary: '更新圖像生成配置',
+                    description: '更新圖像生成的詳細配置設定',
+                    auth: true,
+                    params: [],
+                    body: {
+                        ENGINE: 'openai',
+                        ENABLED: true,
+                        MODEL: 'dall-e-3',
+                        SIZE: '1024x1024',
+                        QUALITY: 'hd',
+                        STYLE: 'natural',
+                        STEPS: 50,
+                        CFG_SCALE: 7.5,
+                        SAMPLER: 'DPM++ 2M Karras',
+                        SCHEDULER: 'normal',
+                        SEED: -1,
+                        NEGATIVE_PROMPT: '',
+                        UPSCALE: false,
+                        UPSCALE_FACTOR: 2
+                    }
+                },
+                {
+                    path: '/api/v1/images/models',
+                    method: 'GET',
+                    summary: '獲取圖像模型列表',
+                    description: '獲取可用的圖像生成模型列表',
+                    auth: true,
+                    params: [],
+                    body: null
+                },
+                {
+                    path: '/api/v1/images/generations',
+                    method: 'POST',
+                    summary: '生成圖像',
+                    description: '根據文字描述生成圖像',
+                    auth: true,
+                    params: [],
+                    body: {
+                        model: 'dall-e-3',
+                        prompt: '一隻可愛的小貓坐在陽光下的花園裡',
+                        n: 1,
+                        size: '1024x1024',
+                        quality: 'standard',
+                        style: 'vivid',
+                        response_format: 'url',
+                        user: 'user_123'
+                    }
+                }
+            ]
+        };
+
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategoryPage('images', imagesCategory);
+        });
+    </script>
+</body>
+</html> 
